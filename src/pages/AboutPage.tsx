@@ -214,7 +214,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           <div className="rounded-2xl border border-emerald-950/15 dark:border-emerald-500/25 bg-white dark:bg-[#0B1B15] p-3 shadow-sm max-w-[310px] w-full mx-auto">
             <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-emerald-950/10 dark:bg-emerald-950">
               <img
-                src="/assets/aistudio/image_e3d72e20.png"
+                src={`${import.meta.env.BASE_URL}assets/aistudio/image_e3d72e20.png`}
                 alt="Portrait of Ishan Ganti"
                 className="absolute max-w-none pointer-events-none select-none"
                 style={{

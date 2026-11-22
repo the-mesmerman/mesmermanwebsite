@@ -4,6 +4,11 @@ import type {
   NavItem,
   StoryItem,
 } from '../types/site';
+import booksImg from '../assets/images/interest_books_editorial_1795319117388.jpg';
+import writingImg from '../assets/images/interest_writing_editorial_1795319117395.jpg';
+import natureImg from '../assets/images/interest_nature_editorial_1795319117431.jpg';
+import bunzoCoverImg from '../assets/images/cover_bunzo_rabbit_1795319115176.jpg';
+import ekavirCoverImg from '../assets/images/cover_ekavir_brave_1795319117106.jpg';
 
 export const NAV_ITEMS: NavItem[] = [
   { id: 'home', label: 'Home', description: 'Home' },
@@ -51,7 +56,7 @@ export const INTERESTS: InterestItem[] = [
     summary: 'Reading good novels in my free time.',
     details: [],
     visualType: 'image',
-    imageUrl: '/src/assets/images/interest_books_editorial_1795319117388.jpg',
+    imageUrl: booksImg,
     imageAlt: 'Hardcover novels stacked beside a reading lamp on a wood desk',
   },
   {
@@ -63,7 +68,7 @@ export const INTERESTS: InterestItem[] = [
       'I wrote two stories earlier. I stopped writing new ones, so both are kept here.',
     details: [],
     visualType: 'image',
-    imageUrl: '/src/assets/images/interest_writing_editorial_1795319117395.jpg',
+    imageUrl: writingImg,
     imageAlt: 'Open notebook with fountain pen and ink sketches',
   },
   {
@@ -75,7 +80,7 @@ export const INTERESTS: InterestItem[] = [
       'Taking a break from screens to spend time outside and enjoy nature.',
     details: [],
     visualType: 'image',
-    imageUrl: '/src/assets/images/interest_nature_editorial_1795319117431.jpg',
+    imageUrl: natureImg,
     imageAlt: 'Misty emerald mountain ridges at dawn',
   },
 ];
@@ -89,7 +94,7 @@ export const STORIES: StoryItem[] = [
     title: 'The Adventures of Bunzo the Rabbit',
     editionLabel: 'Story 01',
     status: 'Published',
-    coverImage: '/src/assets/images/cover_bunzo_rabbit_1795319115176.jpg',
+    coverImage: bunzoCoverImg,
     description:
       'Editable synopsis placeholder — replace with the blurb for The Adventures of Bunzo the Rabbit.',
     isPlaceholderDescription: true,
@@ -102,7 +107,7 @@ export const STORIES: StoryItem[] = [
     title: 'Ekavir - Bravest of the Brave',
     editionLabel: 'Story 02',
     status: 'Published',
-    coverImage: '/src/assets/images/cover_ekavir_brave_1795319117106.jpg',
+    coverImage: ekavirCoverImg,
     description:
       'Editable synopsis placeholder — replace with the blurb for Ekavir - Bravest of the Brave.',
     isPlaceholderDescription: true,
