@@ -3,10 +3,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RotateCcw, Sparkles } from 'lucide-react';
-import { motion } from 'motion/react';
 
 interface Hero3DSceneProps {
   isDark: boolean;
+  isInitialOpen?: boolean;
 }
 
 type ScenePreset = 'crystal' | 'canopy' | 'orbit';
@@ -22,16 +22,16 @@ function createSymbolTexture(symbol: string, isDark: boolean): THREE.CanvasTextu
 
   ctx.beginPath();
   ctx.arc(64, 64, 46, 0, Math.PI * 2);
-  ctx.fillStyle = isDark ? 'rgba(11, 27, 21, 0.86)' : 'rgba(255, 255, 255, 0.92)';
+  ctx.fillStyle = isDark ? 'rgba(17, 30, 24, 0.92)' : 'rgba(255, 255, 255, 0.96)';
   ctx.fill();
   ctx.lineWidth = 2.5;
-  ctx.strokeStyle = isDark ? 'rgba(52, 211, 153, 0.62)' : 'rgba(5, 150, 105, 0.5)';
+  ctx.strokeStyle = isDark ? 'rgba(52, 211, 153, 0.58)' : 'rgba(15, 118, 85, 0.45)';
   ctx.stroke();
 
-  ctx.font = '600 48px "Plus Jakarta Sans", system-ui, sans-serif';
+  ctx.font = '600 46px "Plus Jakarta Sans", system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = isDark ? '#6EE7B7' : '#047857';
+  ctx.fillStyle = isDark ? '#6EE7B7' : '#0F7655';
   ctx.fillText(symbol, 64, 66);
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -40,10 +40,14 @@ function createSymbolTexture(symbol: string, isDark: boolean): THREE.CanvasTextu
   return texture;
 }
 
-export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
+export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
+  isDark,
+  isInitialOpen = false,
+}) => {
   const mountRef = useRef<HTMLDivElement>(null);
   const isDarkRef = useRef(isDark);
   isDarkRef.current = isDark;
+  const isInitialOpenRef = useRef(isInitialOpen);
 
   const [preset, setPreset] = useState<ScenePreset>('crystal');
   const presetRef = useRef<ScenePreset>(preset);
@@ -85,8 +89,10 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
 
     const scene = new THREE.Scene();
 
+    const startZ = prefersReducedMotion ? 7.6 : isInitialOpenRef.current ? 4.15 : 6.1;
+    const startY = prefersReducedMotion ? 0.35 : isInitialOpenRef.current ? 0.68 : 0.45;
     const camera = new THREE.PerspectiveCamera(42, width / height, 0.1, 100);
-    camera.position.set(0, 0.35, 7.6);
+    camera.position.set(0, startY, startZ);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: !isSoftwareGl,
@@ -290,9 +296,9 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
     });
 
     sceneThemeSyncRef.current = (dark: boolean) => {
-      cageMat.color.setHex(dark ? 0x34d399 : 0x059669);
+      cageMat.color.setHex(dark ? 0x34d399 : 0x0f7655);
       cageMat.opacity = dark ? 0.52 : 0.42;
-      ringMatPrimary.color.setHex(dark ? 0x6ee7b7 : 0x0f766e);
+      ringMatPrimary.color.setHex(dark ? 0x6ee7b7 : 0x0f7655);
       symbolSprites.forEach((entry, i) => {
         const nextTex = createSymbolTexture(MATH_SYMBOLS[i], dark);
         entry.tex.dispose();
@@ -311,6 +317,14 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
 
     let burstStrength = 0;
     let pulseProgress = 1;
+    let cameraZoomProgress = prefersReducedMotion ? 1 : 0;
+    let resettingCamera = false;
+
+    const handleControlsStart = () => {
+      cameraZoomProgress = 1;
+      resettingCamera = false;
+    };
+    controls.addEventListener('start', handleControlsStart);
 
     pulseTriggerRef.current = () => {
       burstStrength = 1;
@@ -318,10 +332,15 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
     };
 
     resetCameraRef.current = () => {
-      camera.position.set(0, 0.35, 7.6);
-      controls.target.set(0, 0, 0);
-      controls.update();
+      if (prefersReducedMotion) {
+        camera.position.set(0, 0.35, 7.6);
+        controls.target.set(0, 0, 0);
+        controls.update();
+      } else {
+        resettingCamera = true;
+      }
       burstStrength = 0.45;
+      pulseProgress = 0;
     };
 
     let pointerDownPos = { x: 0, y: 0 };
@@ -399,6 +418,29 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
       const dt = Math.min(clock.getDelta(), 0.05);
       const elapsed = clock.getElapsedTime();
 
+      if (cameraZoomProgress < 1 && !prefersReducedMotion) {
+        const rate = isInitialOpenRef.current ? 0.72 : 1.3;
+        cameraZoomProgress = Math.min(1, cameraZoomProgress + dt * rate);
+        const easedZoom = 1 - Math.pow(1 - cameraZoomProgress, 4);
+        camera.position.set(
+          0,
+          THREE.MathUtils.lerp(startY, 0.35, easedZoom),
+          THREE.MathUtils.lerp(startZ, 7.6, easedZoom),
+        );
+      }
+
+      if (resettingCamera && !prefersReducedMotion) {
+        camera.position.x = THREE.MathUtils.damp(camera.position.x, 0, 5.5, dt);
+        camera.position.y = THREE.MathUtils.damp(camera.position.y, 0.35, 5.5, dt);
+        camera.position.z = THREE.MathUtils.damp(camera.position.z, 7.6, 5.5, dt);
+        controls.target.lerp(new THREE.Vector3(0, 0, 0), 1 - Math.exp(-6 * dt));
+        if (camera.position.distanceTo(new THREE.Vector3(0, 0.35, 7.6)) < 0.04) {
+          camera.position.set(0, 0.35, 7.6);
+          controls.target.set(0, 0, 0);
+          resettingCamera = false;
+        }
+      }
+
       const activePreset = presetRef.current;
       burstStrength = Math.max(0, burstStrength - dt * 1.45);
       const speedMult =
@@ -409,8 +451,11 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
         const s = 0.8 + pulseProgress * 1.6;
         pulseMesh.scale.set(s, s, s);
         pulseMat.opacity = (1 - pulseProgress) * 0.72;
+        const heroKick = 1 + Math.sin(pulseProgress * Math.PI) * 0.065;
+        heroGroup.scale.setScalar(heroKick);
       } else {
         pulseMat.opacity = 0;
+        heroGroup.scale.setScalar(1);
       }
 
       const targetCageScale =
@@ -508,6 +553,7 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
       renderer.domElement.removeEventListener('pointerdown', handlePointerDown);
       renderer.domElement.removeEventListener('pointerup', handlePointerUp);
       renderer.domElement.removeEventListener('pointermove', handlePointerMove);
+      controls.removeEventListener('start', handleControlsStart);
       controls.dispose();
 
       coreGeo.dispose();
@@ -540,7 +586,7 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
   }, []);
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[500px] rounded-2xl border border-emerald-950/12 dark:border-emerald-500/20 bg-gradient-to-br from-emerald-50/85 via-white/90 to-amber-50/60 dark:from-[#0A1E17]/90 dark:via-[#06110D]/90 dark:to-[#0E241C]/90 backdrop-blur-sm overflow-hidden select-none shadow-sm">
+    <div className="relative w-full h-[380px] sm:h-[440px] lg:h-[500px] rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#EFF4F0] dark:bg-[#0D1813] overflow-hidden select-none">
       <div
         ref={mountRef}
         className="w-full h-full cursor-grab active:cursor-grabbing"
@@ -548,14 +594,14 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
       />
 
       {/* Top hint line */}
-      <div className="pointer-events-none absolute top-3.5 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+      <div className="pointer-events-none absolute top-3.5 left-4 right-4 flex items-center justify-between text-[11px] font-mono text-[#647A6F] dark:text-[#748B80]">
         <span>Drag to orbit · Click to pulse</span>
         <span className="tabular-nums">Interactive 3D</span>
       </div>
 
       {/* Bottom Interactive Control Bar */}
       <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2">
-        <div className="inline-flex items-center gap-1 p-1 rounded-xl border border-emerald-950/12 dark:border-emerald-500/25 bg-white/85 dark:bg-[#0B1B15]/85 backdrop-blur-md">
+        <div className="inline-flex items-center gap-1 p-1 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18]">
           {(
             [
               { id: 'crystal', label: 'Crystal' },
@@ -570,10 +616,10 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
                 setPreset(item.id);
                 pulseTriggerRef.current?.();
               }}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors whitespace-nowrap ${
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                 preset === item.id
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#0F7655] text-white'
+                  : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
               }`}
             >
               {item.label}
@@ -582,25 +628,23 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({ isDark }) => {
         </div>
 
         <div className="inline-flex items-center gap-1.5">
-          <motion.button
+          <button
             type="button"
-            whileTap={{ scale: 0.94 }}
             onClick={() => pulseTriggerRef.current?.()}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-emerald-950/12 dark:border-emerald-500/25 bg-white/85 dark:bg-[#0B1B15]/85 backdrop-blur-md text-[11px] font-medium text-emerald-700 dark:text-emerald-400 hover:border-emerald-500/60 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[11px] font-medium text-[#0F7655] dark:text-[#34D399] hover:border-[#0F7655]/60 dark:hover:border-[#34D399]/60 transition-colors duration-150 whitespace-nowrap shrink-0"
           >
             <Sparkles className="w-3 h-3" />
             <span>Pulse</span>
-          </motion.button>
-          <motion.button
+          </button>
+          <button
             type="button"
-            whileTap={{ scale: 0.94 }}
             onClick={() => resetCameraRef.current?.()}
             aria-label="Reset 3D view"
             title="Reset 3D view"
-            className="inline-flex items-center justify-center w-8 h-8 rounded-xl border border-emerald-950/12 dark:border-emerald-500/25 bg-white/85 dark:bg-[#0B1B15]/85 backdrop-blur-md text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-emerald-500/60 transition-colors"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0] hover:border-[#0F7655]/60 dark:hover:border-[#34D399]/60 transition-colors duration-150"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>

@@ -18,15 +18,21 @@ function getInitialPage(): PageId {
 const pageVariants = {
   enter: (direction: number) => ({
     opacity: 0,
-    x: direction >= 0 ? 28 : -28,
+    scale: 0.968,
+    y: 10,
+    x: direction >= 0 ? 22 : -22,
   }),
   center: {
     opacity: 1,
+    scale: 1,
+    y: 0,
     x: 0,
   },
   exit: (direction: number) => ({
     opacity: 0,
-    x: direction >= 0 ? -24 : 24,
+    scale: 0.978,
+    y: -6,
+    x: direction >= 0 ? -18 : 18,
   }),
 };
 
@@ -111,7 +117,7 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen flex flex-col bg-[#F6FAF7] text-slate-900 dark:bg-[#06110D] dark:text-slate-100 transition-colors duration-200">
+      <div className="min-h-screen flex flex-col bg-[#F4F7F4] text-[#11221A] dark:bg-[#0B1410] dark:text-[#EDF4F0] transition-colors duration-200">
         <Navbar
           currentPage={currentPage}
           onNavigate={(page) => navigateTo(page)}
@@ -120,7 +126,7 @@ export default function App() {
         />
 
         <main className="flex-1 overflow-x-hidden">
-          <AnimatePresence mode="wait" custom={direction}>
+          <AnimatePresence mode="wait" custom={direction} initial={false}>
             <motion.div
               key={currentPage}
               custom={direction}
@@ -128,7 +134,7 @@ export default function App() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
               {currentPage === 'home' && (
                 <HomePage isDark={isDark} onNavigate={navigateTo} />
@@ -156,15 +162,14 @@ export default function App() {
           {showFloatingTop && (
             <motion.button
               type="button"
-              initial={{ opacity: 0, scale: 0.85, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.85, y: 10 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.94 }}
-              transition={{ duration: 0.16 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Scroll to top"
-              className="fixed bottom-6 right-6 z-30 w-11 h-11 rounded-xl border border-emerald-900/15 dark:border-emerald-500/25 bg-white/95 dark:bg-[#0B1B15]/95 text-slate-800 dark:text-emerald-50 shadow-lg hover:border-emerald-500 transition-colors flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="fixed bottom-6 right-6 z-30 w-10 h-10 rounded-lg border border-[#0F2A1D]/15 dark:border-[#D6E8DE]/15 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] shadow-sm hover:border-[#0F7655] dark:hover:border-[#34D399] transition-colors duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
             >
               <ArrowUp className="w-4 h-4" />
             </motion.button>

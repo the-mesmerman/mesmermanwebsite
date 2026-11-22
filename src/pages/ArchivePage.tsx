@@ -27,63 +27,75 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
         onNavigate={onNavigate}
       />
 
-      <motion.header
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.36, ease: EASE_OUT }}
-        className="space-y-2 pb-10 border-b border-emerald-950/10 dark:border-emerald-500/15"
-      >
-        <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-emerald-50">
-          Site Archive
-        </h1>
-        <p className="text-base text-slate-600 dark:text-slate-300 max-w-xl">
+      <header className="space-y-2 pb-10 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11">
+        <div className="overflow-hidden">
+          <motion.h1
+            initial={{ y: '100%', opacity: 0 }}
+            animate={{ y: '0%', opacity: 1 }}
+            transition={{ duration: 0.38, ease: EASE_OUT }}
+            className="font-display text-4xl sm:text-5xl font-semibold tracking-tight text-[#11221A] dark:text-[#EDF4F0]"
+          >
+            Site{' '}
+            <span className="font-serif-editorial italic font-medium text-[#0F7655] dark:text-[#34D399]">
+              Archive
+            </span>
+          </motion.h1>
+        </div>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32, delay: 0.08, ease: EASE_OUT }}
+          className="text-base text-[#4A6256] dark:text-[#94ABA0] max-w-xl"
+        >
           Past versions since May 2023.
-        </p>
-      </motion.header>
+        </motion.p>
+      </header>
 
       <section className="pt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div
-          className="lg:col-span-5 space-y-3"
+          className="lg:col-span-5 rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] divide-y divide-[#0F2A1D]/10 dark:divide-[#D6E8DE]/10 overflow-hidden"
           role="listbox"
           aria-label="Website versions"
         >
           {ARCHIVE_MILESTONES.map((milestone) => {
             const active = milestone.id === selectedMilestone.id;
             return (
-              <motion.button
+              <button
                 key={milestone.id}
                 type="button"
                 role="option"
                 aria-selected={active}
-                whileHover={{ x: 3 }}
-                whileTap={{ scale: 0.985 }}
-                transition={{ duration: 0.14 }}
                 onClick={() => setSelectedId(milestone.id)}
-                className={`w-full text-left p-4 rounded-2xl border transition-colors duration-150 flex items-center gap-4 ${
-                  active
-                    ? 'border-emerald-600 dark:border-emerald-500 bg-white dark:bg-[#0B1B15] shadow-sm'
-                    : 'border-emerald-950/10 dark:border-emerald-500/15 bg-white/70 dark:bg-[#0B1B15]/60 hover:border-emerald-500/40'
-                }`}
+                className="relative w-full text-left p-4 transition-colors duration-150 flex items-center gap-4 bg-white dark:bg-[#111E18] hover:bg-[#F7FAF7] dark:hover:bg-[#15241D]"
               >
+                {active && (
+                  <motion.span
+                    layoutId="archive-active-row"
+                    transition={{ type: 'spring', stiffness: 360, damping: 32 }}
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-[#EFF4F0] dark:bg-[#172820]"
+                  />
+                )}
+
                 <div
-                  className={`w-12 h-9 rounded-lg flex items-center justify-center font-mono text-xs font-semibold shrink-0 tabular-nums transition-colors ${
+                  className={`relative z-10 w-12 h-8 rounded-md flex items-center justify-center font-mono text-xs font-semibold shrink-0 tabular-nums transition-colors duration-150 ${
                     active
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-emerald-50 dark:bg-[#112820] text-slate-700 dark:text-slate-300'
+                      ? 'bg-[#0F7655] text-white'
+                      : 'bg-[#EFF4F0] dark:bg-[#172820] text-[#4A6256] dark:text-[#94ABA0]'
                   }`}
                 >
                   {milestone.version}
                 </div>
 
-                <div className="space-y-0.5 min-w-0">
-                  <div className="text-xs text-slate-500 dark:text-slate-400 tabular-nums">
+                <div className="relative z-10 space-y-0.5 min-w-0">
+                  <div className="text-xs text-[#647A6F] dark:text-[#748B80] tabular-nums">
                     {milestone.date}
                   </div>
-                  <h2 className="font-display text-sm sm:text-base font-bold text-slate-900 dark:text-emerald-50 truncate">
+                  <h2 className="font-display text-sm sm:text-base font-semibold text-[#11221A] dark:text-[#EDF4F0] truncate">
                     {milestone.title}
                   </h2>
                 </div>
-              </motion.button>
+              </button>
             );
           })}
         </div>
@@ -92,22 +104,22 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedMilestone.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.22, ease: EASE_OUT }}
-              className="rounded-2xl border border-emerald-950/10 dark:border-emerald-500/15 bg-white dark:bg-[#0B1B15] p-6 sm:p-8 space-y-5"
+              initial={{ opacity: 0, scale: 0.98, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.985, y: -6 }}
+              transition={{ duration: 0.2, ease: EASE_OUT }}
+              className="rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] p-6 sm:p-8 space-y-5"
             >
-              <div className="flex items-center justify-between gap-3 pb-4 border-b border-emerald-950/10 dark:border-emerald-500/15">
+              <div className="flex items-center justify-between gap-3 pb-4 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center">
-                    <Layers className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-9 h-9 rounded-lg bg-[#EFF4F0] dark:bg-[#172820] border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 flex items-center justify-center">
+                    <Layers className="w-4 h-4 text-[#0F7655] dark:text-[#34D399]" />
                   </div>
                   <div>
-                    <div className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">
+                    <div className="font-mono text-xs text-[#0F7655] dark:text-[#34D399] font-semibold tabular-nums">
                       {selectedMilestone.version}
                     </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 tabular-nums">
+                    <div className="text-xs text-[#647A6F] dark:text-[#748B80] flex items-center gap-1.5 tabular-nums">
                       <Clock className="w-3 h-3" />
                       <span>{selectedMilestone.date}</span>
                     </div>
@@ -116,28 +128,35 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
               </div>
 
               <div className="space-y-2.5">
-                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-emerald-50">
+                <h2 className="font-display text-2xl font-semibold text-[#11221A] dark:text-[#EDF4F0]">
                   {selectedMilestone.title}
                 </h2>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm sm:text-base text-[#4A6256] dark:text-[#94ABA0] leading-relaxed">
                   {selectedMilestone.summary}
                 </p>
               </div>
 
               <ul className="space-y-2 pt-1">
                 {selectedMilestone.highlights.map((item, idx) => (
-                  <li
+                  <motion.li
                     key={idx}
-                    className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300"
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.2,
+                      delay: 0.04 + idx * 0.045,
+                      ease: EASE_OUT,
+                    }}
+                    className="flex items-start gap-2.5 text-sm text-[#4A6256] dark:text-[#94ABA0]"
                   >
                     <span
                       aria-hidden="true"
-                      className="text-emerald-600 dark:text-emerald-400 font-mono shrink-0"
+                      className="text-[#0F7655] dark:text-[#34D399] font-mono shrink-0"
                     >
                       —
                     </span>
                     <span>{item}</span>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </motion.div>

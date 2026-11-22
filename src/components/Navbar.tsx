@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Moon, Sun, X } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
 import { NAV_ITEMS } from '../data/siteData';
 import type { PageId } from '../types/site';
 import { MonogramLogo } from './MonogramLogo';
@@ -19,6 +19,12 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 240,
+    damping: 32,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -39,23 +45,23 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-emerald-950/10 dark:border-emerald-500/15 bg-[#F6FAF7]/90 dark:bg-[#06110D]/90 backdrop-blur-md transition-colors duration-200">
+      <header className="sticky top-0 z-40 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-[#F4F7F4]/95 dark:bg-[#0B1410]/95 transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
           {/* Zone 1: Brand Mark */}
           <motion.button
             type="button"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.14 }}
+            whileTap={{ scale: 0.96 }}
             onClick={() => handleSelectPage('home')}
-            className="flex items-center gap-3 text-left whitespace-nowrap shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg py-1 pr-2"
+            className="flex items-center gap-3 text-left whitespace-nowrap shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655] rounded-lg py-1 pr-2"
             aria-label="Ishan Ganti Home"
           >
-            <MonogramLogo
-              size={32}
-              className="transition-transform duration-200 group-hover:scale-105"
-            />
-            <span className="font-display text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-emerald-50 whitespace-nowrap shrink-0">
+            <motion.div
+              whileHover={{ rotate: [0, -7, 6, 0], scale: 1.07 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <MonogramLogo size={32} />
+            </motion.div>
+            <span className="font-display text-sm sm:text-base font-semibold tracking-tight text-[#11221A] dark:text-[#EDF4F0] whitespace-nowrap shrink-0">
               Ishan Ganti
             </span>
           </motion.button>
@@ -63,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Zone 2: Clean Single-Line Tabs */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-6 text-sm font-medium"
+            className="hidden md:flex items-center gap-7 text-sm font-medium"
           >
             {NAV_ITEMS.map((item) => {
               const active = currentPage === item.id;
@@ -72,19 +78,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => handleSelectPage(item.id)}
-                  className={`relative py-2 whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded px-1 ${
+                  className={`relative py-2 whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655] rounded px-1 ${
                     active
-                      ? 'text-emerald-700 dark:text-emerald-400 font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                      ? 'text-[#0F7655] dark:text-[#34D399] font-semibold'
+                      : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
                   }`}
                 >
                   {item.label}
                   {active && (
                     <motion.span
                       layoutId="nav-active-underline"
-                      transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
                       aria-hidden="true"
-                      className="absolute inset-x-1 -bottom-[1px] h-0.5 bg-emerald-600 dark:bg-emerald-400 rounded-full"
+                      className="absolute inset-x-1 -bottom-[1px] h-[2px] bg-[#0F7655] dark:bg-[#34D399]"
                     />
                   )}
                 </button>
@@ -94,39 +100,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Zone 3: Theme Toggle + Mobile Menu */}
           <div className="flex items-center gap-2 shrink-0">
-            <motion.button
+            <button
               type="button"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ duration: 0.14 }}
               onClick={onToggleTheme}
               aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-emerald-950/12 dark:border-emerald-500/20 bg-white dark:bg-[#0B1B15] text-slate-700 dark:text-slate-200 hover:border-emerald-500/50 text-xs font-medium transition-colors whitespace-nowrap shrink-0 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] hover:border-[#0F7655]/50 dark:hover:border-[#34D399]/50 text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
             >
               {isDark ? (
                 <>
-                  <Sun className="w-4 h-4 text-amber-400" />
+                  <Sun className="w-3.5 h-3.5 text-[#FBBF24]" />
                   <span className="hidden sm:inline">Light</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-4 h-4 text-emerald-700" />
+                  <Moon className="w-3.5 h-3.5 text-[#0F7655]" />
                   <span className="hidden sm:inline">Dark</span>
                 </>
               )}
-            </motion.button>
+            </button>
 
-            <motion.button
+            <button
               type="button"
-              whileTap={{ scale: 0.95 }}
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation menu"
-              className="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg border border-emerald-950/12 dark:border-emerald-500/20 bg-white dark:bg-[#0B1B15] text-slate-700 dark:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
             >
               <Menu className="w-5 h-5" />
-            </motion.button>
+            </button>
           </div>
         </div>
+        <motion.div
+          aria-hidden="true"
+          style={{ scaleX: smoothProgress }}
+          className="h-[2px] bg-[#0F7655] dark:bg-[#34D399] origin-left"
+        />
       </header>
 
       {/* Mobile Navigation Drawer */}
@@ -143,21 +150,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 bg-emerald-950/60 backdrop-blur-xs"
+              className="fixed inset-0 bg-[#0B1410]/65"
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-xs h-full bg-[#F6FAF7] dark:bg-[#06110D] border-l border-emerald-950/10 dark:border-emerald-500/20 p-6 flex flex-col justify-between overflow-y-auto shadow-2xl"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-xs h-full bg-[#F4F7F4] dark:bg-[#0B1410] border-l border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 p-6 flex flex-col justify-between overflow-y-auto"
             >
               <div>
-                <div className="flex items-center justify-between pb-6 border-b border-emerald-950/10 dark:border-emerald-500/15">
+                <div className="flex items-center justify-between pb-6 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11">
                   <div className="flex items-center gap-3">
                     <MonogramLogo size={32} />
-                    <span className="font-display text-sm font-bold tracking-tight text-slate-900 dark:text-emerald-50">
+                    <span className="font-display text-sm font-semibold tracking-tight text-[#11221A] dark:text-[#EDF4F0]">
                       Ishan Ganti
                     </span>
                   </div>
@@ -165,51 +172,50 @@ export const Navbar: React.FC<NavbarProps> = ({
                     type="button"
                     onClick={() => setMobileOpen(false)}
                     aria-label="Close navigation menu"
-                    className="inline-flex items-center justify-center w-11 h-11 rounded-lg border border-emerald-950/12 dark:border-emerald-500/20 text-slate-700 dark:text-slate-300"
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 text-[#4A6256] dark:text-[#94ABA0]"
                   >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
-                <nav className="mt-6 flex flex-col gap-1.5" aria-label="Mobile pages">
+                <nav className="mt-6 flex flex-col gap-1" aria-label="Mobile pages">
                   {NAV_ITEMS.map((item) => {
                     const active = currentPage === item.id;
                     return (
-                      <motion.button
+                      <button
                         key={item.id}
                         type="button"
-                        whileTap={{ scale: 0.98 }}
                         onClick={() => handleSelectPage(item.id)}
-                        className={`w-full text-left px-4 py-3 rounded-xl transition-colors min-h-[44px] flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-150 min-h-[44px] flex items-center justify-between ${
                           active
-                            ? 'bg-emerald-600 text-white'
-                            : 'text-slate-800 dark:text-slate-200 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/30'
+                            ? 'bg-[#0F7655] text-white'
+                            : 'text-[#11221A] dark:text-[#EDF4F0] hover:bg-[#E9EFEA] dark:hover:bg-[#172820]'
                         }`}
                       >
-                        <span className="text-sm font-semibold">{item.label}</span>
-                      </motion.button>
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </button>
                     );
                   })}
                 </nav>
               </div>
 
-              <div className="pt-6 border-t border-emerald-950/10 dark:border-emerald-500/15 flex items-center justify-between">
-                <span className="text-xs text-slate-500 dark:text-slate-400">
+              <div className="pt-6 border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 flex items-center justify-between">
+                <span className="text-xs text-[#647A6F] dark:text-[#748B80]">
                   Theme
                 </span>
                 <button
                   type="button"
                   onClick={onToggleTheme}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-emerald-950/12 dark:border-emerald-500/20 bg-white dark:bg-[#0B1B15] text-sm font-medium text-slate-800 dark:text-slate-200 min-h-[44px]"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-sm font-medium text-[#11221A] dark:text-[#EDF4F0] min-h-[44px]"
                 >
                   {isDark ? (
                     <>
-                      <Sun className="w-4 h-4 text-amber-400" />
+                      <Sun className="w-4 h-4 text-[#FBBF24]" />
                       <span>Light</span>
                     </>
                   ) : (
                     <>
-                      <Moon className="w-4 h-4 text-emerald-700" />
+                      <Moon className="w-4 h-4 text-[#0F7655]" />
                       <span>Dark</span>
                     </>
                   )}

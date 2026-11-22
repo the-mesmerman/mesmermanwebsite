@@ -96,9 +96,14 @@ export const STORIES: StoryItem[] = [
     status: 'Published',
     coverImage: bunzoCoverImg,
     description:
-      'Editable synopsis placeholder — replace with the blurb for The Adventures of Bunzo the Rabbit.',
-    isPlaceholderDescription: true,
-    pdfUrl: null,
+      'Separated from his parents after a flood hits Bunny Town, Bunzo ends up in the human world with a boy named Frank and goes on a trip to Miami to reunite his family.',
+    isPlaceholderDescription: false,
+    pdfUrl:
+      'https://drive.google.com/file/d/1lOHBNk-2ZFbrvq-ROLUbdwGUhrQtJ7KX/preview',
+    driveViewUrl:
+      'https://drive.google.com/file/d/1lOHBNk-2ZFbrvq-ROLUbdwGUhrQtJ7KX/view?usp=drivesdk',
+    downloadUrl:
+      'https://drive.google.com/uc?export=download&id=1lOHBNk-2ZFbrvq-ROLUbdwGUhrQtJ7KX',
     downloadAllowed: true,
     accentTone: 'cobalt',
   },
@@ -109,9 +114,14 @@ export const STORIES: StoryItem[] = [
     status: 'Published',
     coverImage: ekavirCoverImg,
     description:
-      'Editable synopsis placeholder — replace with the blurb for Ekavir - Bravest of the Brave.',
-    isPlaceholderDescription: true,
-    pdfUrl: null,
+      'After losing his home in the Himalayan village of Jalakpur, Ekavir trains under Master Keshav to become a skilled swordsman and defend his country.',
+    isPlaceholderDescription: false,
+    pdfUrl:
+      'https://drive.google.com/file/d/1rCKIsQdah65uzqa3oj2ZlJJDBUiNbxPX/preview',
+    driveViewUrl:
+      'https://drive.google.com/file/d/1rCKIsQdah65uzqa3oj2ZlJJDBUiNbxPX/view?usp=drivesdk',
+    downloadUrl:
+      'https://drive.google.com/uc?export=download&id=1rCKIsQdah65uzqa3oj2ZlJJDBUiNbxPX',
     downloadAllowed: true,
     accentTone: 'amber',
   },

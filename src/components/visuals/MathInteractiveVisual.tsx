@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pause, Play, Sparkles } from 'lucide-react';
-import { motion } from 'motion/react';
 
 type MathMode = 'phyllotaxis' | 'lissajous';
 
@@ -75,8 +74,8 @@ export const MathInteractiveVisual: React.FC = () => {
 
       // Subtle coordinate grid
       ctx.strokeStyle = isDark
-        ? 'rgba(148, 163, 184, 0.08)'
-        : 'rgba(15, 23, 42, 0.06)';
+        ? 'rgba(214, 232, 222, 0.06)'
+        : 'rgba(15, 42, 29, 0.06)';
       ctx.lineWidth = 1;
       const step = 28;
       for (let x = width / 2; x < width; x += step) {
@@ -144,11 +143,11 @@ export const MathInteractiveVisual: React.FC = () => {
           if (i % 5 === 0) {
             ctx.fillStyle = isDark
               ? `rgba(251, 191, 36, ${0.45 + t * 0.45 + boost * 0.25})`
-              : `rgba(217, 119, 6, ${0.45 + t * 0.45})`;
+              : `rgba(180, 83, 9, ${0.45 + t * 0.45})`;
           } else {
             ctx.fillStyle = isDark
               ? `rgba(52, 211, 153, ${0.35 + t * 0.55 + boost * 0.25})`
-              : `rgba(5, 150, 105, ${0.42 + t * 0.5})`;
+              : `rgba(15, 118, 85, ${0.44 + t * 0.48})`;
           }
           ctx.fill();
         }
@@ -223,14 +222,14 @@ export const MathInteractiveVisual: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col rounded-xl border border-emerald-950/12 dark:border-emerald-500/20 bg-[#F4FAF6] dark:bg-[#071510] overflow-hidden">
+    <div className="flex flex-col rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#EFF4F0] dark:bg-[#0D1813] overflow-hidden">
       <div className="relative h-64 sm:h-72 w-full">
         <canvas
           ref={canvasRef}
           className="w-full h-full block cursor-crosshair"
           aria-label="Interactive animated mathematical geometry simulation"
         />
-        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
+        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#647A6F] dark:text-[#748B80] tabular-nums">
           <span>
             {mode === 'phyllotaxis'
               ? `Golden Angle: ${param.toFixed(1)}°`
@@ -242,18 +241,18 @@ export const MathInteractiveVisual: React.FC = () => {
         </div>
       </div>
 
-      <div className="border-t border-emerald-950/10 dark:border-emerald-500/15 bg-white dark:bg-[#0B1B15] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
-        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-emerald-50 dark:bg-[#112820]">
+      <div className="border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-[#EFF4F0] dark:bg-[#172820]">
           <button
             type="button"
             onClick={() => {
               setMode('phyllotaxis');
               setParam(137.5);
             }}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors duration-150 whitespace-nowrap shrink-0 ${
               mode === 'phyllotaxis'
-                ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300'
+                ? 'bg-[#0F7655] text-white'
+                : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
             }`}
           >
             Golden Spiral
@@ -264,10 +263,10 @@ export const MathInteractiveVisual: React.FC = () => {
               setMode('lissajous');
               setParam(100);
             }}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+            className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors duration-150 whitespace-nowrap shrink-0 ${
               mode === 'lissajous'
-                ? 'bg-white dark:bg-emerald-600 text-slate-900 dark:text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300'
+                ? 'bg-[#0F7655] text-white'
+                : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
             }`}
           >
             Harmonic Curve
@@ -275,7 +274,7 @@ export const MathInteractiveVisual: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+          <label className="flex items-center gap-2 text-xs text-[#4A6256] dark:text-[#94ABA0]">
             <span className="font-mono text-[11px]">Angle</span>
             <input
               type="range"
@@ -284,36 +283,34 @@ export const MathInteractiveVisual: React.FC = () => {
               step={0.5}
               value={param}
               onChange={(e) => setParam(Number(e.target.value))}
-              className="w-20 sm:w-24 accent-emerald-600"
+              className="w-20 sm:w-24 accent-[#0F7655] dark:accent-[#34D399]"
             />
           </label>
 
           {mode === 'phyllotaxis' && param !== 137.5 && (
-            <motion.button
+            <button
               type="button"
-              whileTap={{ scale: 0.94 }}
               onClick={() => setParam(137.5)}
               title="Snap to Golden Angle 137.5°"
-              className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-emerald-950/15 dark:border-emerald-500/25 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:border-emerald-500"
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 text-[11px] font-mono text-[#0F7655] dark:text-[#34D399] hover:border-[#0F7655] dark:hover:border-[#34D399] transition-colors duration-150"
             >
               <Sparkles className="w-3 h-3" />
               <span>137.5°</span>
-            </motion.button>
+            </button>
           )}
 
-          <motion.button
+          <button
             type="button"
-            whileTap={{ scale: 0.94 }}
             onClick={() => setIsPlaying((p) => !p)}
             aria-label={isPlaying ? 'Pause simulation' : 'Play simulation'}
-            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-emerald-950/15 dark:border-emerald-500/25 bg-[#F6FAF7] dark:bg-[#112820] text-slate-700 dark:text-slate-200 hover:border-emerald-500 transition-colors"
+            className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#F4F7F4] dark:bg-[#172820] text-[#4A6256] dark:text-[#94ABA0] hover:border-[#0F7655] dark:hover:border-[#34D399] hover:text-[#11221A] dark:hover:text-[#EDF4F0] transition-colors duration-150"
           >
             {isPlaying ? (
               <Pause className="w-3.5 h-3.5" />
             ) : (
               <Play className="w-3.5 h-3.5" />
             )}
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>

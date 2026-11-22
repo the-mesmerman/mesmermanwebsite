@@ -93,13 +93,29 @@ const POLY_TREES = [
 export const LowPolyNatureCanvas: React.FC = () => {
   const [skyTime, setSkyTime] = useState<SkyTime>('morning');
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [rippledId, setRippledId] = useState<string | null>(null);
+  const [rippledIds, setRippledIds] = useState<string[]>([]);
   const [hoveredTree, setHoveredTree] = useState<number | null>(null);
 
   const sky = SKY_GRADIENTS[skyTime];
 
+  const triggerFacetWave = (facetId: string) => {
+    const idx = MOUNTAIN_FACETS.findIndex((f) => f.id === facetId);
+    const neighborIds = [
+      MOUNTAIN_FACETS[idx - 1]?.id,
+      MOUNTAIN_FACETS[idx + 1]?.id,
+    ].filter(Boolean) as string[];
+
+    setRippledIds([facetId]);
+    window.setTimeout(() => {
+      setRippledIds(neighborIds);
+    }, 95);
+    window.setTimeout(() => {
+      setRippledIds([]);
+    }, 380);
+  };
+
   return (
-    <div className="rounded-2xl border border-emerald-950/12 dark:border-emerald-500/20 bg-white/90 dark:bg-[#0B1B15]/90 overflow-hidden shadow-sm">
+    <div className="rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] overflow-hidden">
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <svg
           viewBox="0 0 640 260"
@@ -126,8 +142,12 @@ export const LowPolyNatureCanvas: React.FC = () => {
 
           {/* Low-Poly Sun / Moon */}
           <motion.g
-            animate={{ y: skyTime === 'golden' ? 22 : skyTime === 'twilight' ? -8 : 0 }}
+            animate={{
+              y: skyTime === 'golden' ? 22 : skyTime === 'twilight' ? -8 : 0,
+              rotate: skyTime === 'golden' ? 30 : skyTime === 'twilight' ? 60 : 0,
+            }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: '515px 72px' }}
           >
             <polygon
               points="515,44 539,58 539,86 515,100 491,86 491,58"
@@ -154,26 +174,23 @@ export const LowPolyNatureCanvas: React.FC = () => {
           {/* Interactive Mountain & Valley Low-Poly Facets */}
           {MOUNTAIN_FACETS.map((facet) => {
             const isHovered = hoveredId === facet.id;
-            const isRippled = rippledId === facet.id;
+            const isRippled = rippledIds.includes(facet.id);
             return (
               <polygon
                 key={facet.id}
                 points={facet.points}
                 fill={facet.colors[skyTime]}
                 stroke={skyTime === 'twilight' ? '#34D399' : '#FFFFFF'}
-                strokeOpacity={isHovered ? 0.65 : 0.18}
-                strokeWidth={isHovered ? 1.5 : 0.75}
+                strokeOpacity={isHovered || isRippled ? 0.72 : 0.18}
+                strokeWidth={isHovered || isRippled ? 1.5 : 0.75}
                 style={{
-                  filter: isHovered || isRippled ? 'brightness(1.18)' : 'brightness(1)',
-                  transition: 'fill 0.45s ease, filter 0.2s ease, stroke-opacity 0.2s ease',
+                  filter: isHovered || isRippled ? 'brightness(1.2)' : 'brightness(1)',
+                  transition: 'fill 0.45s ease, filter 0.18s ease, stroke-opacity 0.18s ease',
                   cursor: 'pointer',
                 }}
                 onMouseEnter={() => setHoveredId(facet.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                onClick={() => {
-                  setRippledId(facet.id);
-                  setTimeout(() => setRippledId(null), 420);
-                }}
+                onClick={() => triggerFacetWave(facet.id)}
               />
             );
           })}
@@ -212,12 +229,12 @@ export const LowPolyNatureCanvas: React.FC = () => {
       </div>
 
       {/* Controls Strip */}
-      <div className="px-4 py-2.5 border-t border-emerald-950/10 dark:border-emerald-500/15 flex flex-wrap items-center justify-between gap-2 text-xs">
-        <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
-          Low-Poly Nature Scene · Hover facets
+      <div className="px-4 py-2.5 border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] flex flex-wrap items-center justify-between gap-2 text-xs">
+        <span className="font-mono text-[11px] text-[#647A6F] dark:text-[#748B80]">
+          Interactive Nature · Hover facets
         </span>
 
-        <div className="inline-flex items-center gap-1 p-0.5 rounded-lg bg-emerald-50 dark:bg-[#112820]">
+        <div className="inline-flex items-center gap-1 p-0.5 rounded-lg bg-[#EFF4F0] dark:bg-[#172820]">
           {(
             [
               { id: 'morning', label: 'Morning', icon: <Sun className="w-3 h-3" /> },
@@ -229,10 +246,10 @@ export const LowPolyNatureCanvas: React.FC = () => {
               key={mode.id}
               type="button"
               onClick={() => setSkyTime(mode.id)}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors whitespace-nowrap ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                 skyTime === mode.id
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#0F7655] text-white'
+                  : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
               }`}
             >
               {mode.icon}

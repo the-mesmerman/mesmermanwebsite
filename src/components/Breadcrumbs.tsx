@@ -13,7 +13,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
 }) => {
   return (
     <nav aria-label="Breadcrumb" className="mb-6">
-      <ol className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+      <ol className="flex flex-wrap items-center gap-1.5 text-xs text-[#647A6F] dark:text-[#748B80]">
         {items.map((item, idx) => {
           const isLast = idx === items.length - 1;
           return (
@@ -23,12 +23,12 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate(item.page!)}
-                  className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors rounded px-1 py-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                  className="hover:text-[#0F7655] dark:hover:text-[#34D399] transition-colors duration-150 rounded px-1 py-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
                 >
                   {item.label}
                 </button>
               ) : (
-                <span className="text-slate-800 dark:text-slate-200 font-medium">
+                <span className="text-[#11221A] dark:text-[#EDF4F0] font-medium">
                   {item.label}
                 </span>
               )}

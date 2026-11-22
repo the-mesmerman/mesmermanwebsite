@@ -27,6 +27,8 @@ export interface StoryItem {
   description: string;
   isPlaceholderDescription: boolean;
   pdfUrl: string | null;
+  driveViewUrl?: string;
+  downloadUrl?: string;
   downloadAllowed: boolean;
   notes?: string;
   accentTone: 'cobalt' | 'amber';

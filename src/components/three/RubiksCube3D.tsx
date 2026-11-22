@@ -101,14 +101,14 @@ export const RubiksCube3D: React.FC = () => {
     scene.environment = envTex;
     pmremGenerator.dispose();
 
-    const hemi = new THREE.HemisphereLight(0xdbeafe, 0x0f172a, 0.9);
+    const hemi = new THREE.HemisphereLight(0xd6e8de, 0x0b1410, 0.92);
     scene.add(hemi);
 
     const key = new THREE.DirectionalLight(0xfff4e6, 2.0);
     key.position.set(6, 8, 6);
     scene.add(key);
 
-    const fill = new THREE.DirectionalLight(0x60a5fa, 0.8);
+    const fill = new THREE.DirectionalLight(0x34d399, 0.72);
     fill.position.set(-5, -3, -4);
     scene.add(fill);
 
@@ -118,11 +118,11 @@ export const RubiksCube3D: React.FC = () => {
     const cubieBodyGeo = new THREE.BoxGeometry(0.92, 0.92, 0.92);
     const stickerGeo = new THREE.PlaneGeometry(0.76, 0.76);
     const bodyMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0b101b,
-      roughness: 0.32,
-      metalness: 0.18,
-      clearcoat: 0.45,
-      clearcoatRoughness: 0.22,
+      color: 0x101815,
+      roughness: 0.34,
+      metalness: 0.16,
+      clearcoat: 0.4,
+      clearcoatRoughness: 0.24,
     });
 
     const stickerMats = {
@@ -420,30 +420,29 @@ export const RubiksCube3D: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col rounded-xl border border-emerald-950/12 dark:border-emerald-500/20 bg-[#F4FAF6] dark:bg-[#071510] overflow-hidden">
+    <div className="flex flex-col rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#EFF4F0] dark:bg-[#0D1813] overflow-hidden">
       <div className="relative h-72 sm:h-80 w-full">
         <div
           ref={mountRef}
           className="w-full h-full cursor-grab active:cursor-grabbing"
           aria-label="Interactive 3D Rubik's Cube — drag to inspect"
         />
-        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-slate-400">
+        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#647A6F] dark:text-[#748B80]">
           <span>Drag to rotate view</span>
           <span className="tabular-nums">Moves: {moveCount}</span>
         </div>
       </div>
 
-      <div className="border-t border-emerald-950/10 dark:border-emerald-500/15 bg-white dark:bg-[#0B1B15] px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div className="border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Cube face turns">
           {(Object.keys(MOVE_SPECS) as FaceMove[]).map((move) => (
             <motion.button
               key={move}
               type="button"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.92 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => handleTurn(move)}
               title={`Turn ${MOVE_SPECS[move].label} face`}
-              className="px-2.5 py-1.5 rounded-md border border-emerald-950/12 dark:border-emerald-500/20 bg-[#F6FAF7] dark:bg-[#112820] hover:border-emerald-500 dark:hover:border-emerald-400 text-xs font-mono font-medium text-slate-800 dark:text-slate-200 transition-colors min-h-[36px] min-w-[36px]"
+              className="px-2.5 py-1.5 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#F4F7F4] dark:bg-[#172820] hover:border-[#0F7655] dark:hover:border-[#34D399] text-xs font-mono font-medium text-[#11221A] dark:text-[#EDF4F0] transition-colors duration-150 min-h-[36px] min-w-[36px]"
             >
               {move}
             </motion.button>
@@ -451,41 +450,36 @@ export const RubiksCube3D: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1.5">
-          <motion.button
+          <button
             type="button"
-            whileTap={{ scale: 0.94 }}
             onClick={() => setAutoOrbit((o) => !o)}
             title={autoOrbit ? 'Pause ambient orbit' : 'Resume ambient orbit'}
             aria-label={autoOrbit ? 'Pause ambient orbit' : 'Resume ambient orbit'}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-emerald-950/12 dark:border-emerald-500/20 bg-[#F6FAF7] dark:bg-[#112820] text-slate-700 dark:text-slate-200 hover:border-emerald-500 transition-colors"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#F4F7F4] dark:bg-[#172820] text-[#4A6256] dark:text-[#94ABA0] hover:border-[#0F7655] dark:hover:border-[#34D399] hover:text-[#11221A] dark:hover:text-[#EDF4F0] transition-colors duration-150"
           >
             {autoOrbit ? (
               <Pause className="w-3.5 h-3.5" />
             ) : (
               <Play className="w-3.5 h-3.5" />
             )}
-          </motion.button>
-          <motion.button
+          </button>
+          <button
             type="button"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.95 }}
             onClick={handleScramble}
             disabled={isTurning}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white text-xs font-medium transition-colors min-h-[36px] whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0F7655] hover:bg-[#0D6448] disabled:opacity-60 text-white text-xs font-medium transition-colors duration-150 min-h-[36px] whitespace-nowrap shrink-0"
           >
             <Shuffle className="w-3.5 h-3.5" />
             <span>Scramble</span>
-          </motion.button>
-          <motion.button
+          </button>
+          <button
             type="button"
-            whileHover={{ y: -1 }}
-            whileTap={{ scale: 0.95 }}
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-emerald-950/12 dark:border-emerald-500/20 hover:border-emerald-500/50 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors min-h-[36px] whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 hover:border-[#0F7655]/60 dark:hover:border-[#34D399]/60 text-[#11221A] dark:text-[#EDF4F0] text-xs font-medium transition-colors duration-150 min-h-[36px] whitespace-nowrap shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
-          </motion.button>
+          </button>
         </div>
       </div>
     </div>
