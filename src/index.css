@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bg-canvas: #F6FAF7;
+    --bg-surface: #FFFFFF;
+    --bg-surface-muted: #EBF4EE;
+    --border-hairline: rgba(16, 65, 44, 0.12);
+    --text-primary: #0D2018;
+    --text-secondary: #466357;
+    --accent-primary: #059669;
+    --accent-secondary: #0D9488;
+    --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .dark {
+    --bg-canvas: #06110D;
+    --bg-surface: #0B1B15;
+    --bg-surface-muted: #112820;
+    --border-hairline: rgba(110, 231, 183, 0.14);
+    --text-primary: #F4FAF7;
+    --text-secondary: #9BB8AC;
+    --accent-primary: #10B981;
+    --accent-secondary: #14B8A6;
+  }
+
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
