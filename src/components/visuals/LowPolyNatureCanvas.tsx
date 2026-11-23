@@ -115,7 +115,7 @@ export const LowPolyNatureCanvas: React.FC = () => {
   };
 
   return (
-    <div className="rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] overflow-hidden">
+    <div className="rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] overflow-hidden">
       <div className="relative aspect-[16/9] w-full overflow-hidden">
         <svg
           viewBox="0 0 640 260"
@@ -180,7 +180,7 @@ export const LowPolyNatureCanvas: React.FC = () => {
                 key={facet.id}
                 points={facet.points}
                 fill={facet.colors[skyTime]}
-                stroke={skyTime === 'twilight' ? '#34D399' : '#FFFFFF'}
+                stroke={skyTime === 'twilight' ? '#8CD892' : '#FFFFFF'}
                 strokeOpacity={isHovered || isRippled ? 0.72 : 0.18}
                 strokeWidth={isHovered || isRippled ? 1.5 : 0.75}
                 style={{
@@ -228,13 +228,13 @@ export const LowPolyNatureCanvas: React.FC = () => {
         </svg>
       </div>
 
-      {/* Controls Strip */}
-      <div className="px-4 py-2.5 border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] flex flex-wrap items-center justify-between gap-2 text-xs">
-        <span className="font-mono text-[11px] text-[#647A6F] dark:text-[#748B80]">
+      {/* Square Controls Strip */}
+      <div className="px-4 py-2.5 border-t border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] flex flex-wrap items-center justify-between gap-2 text-xs">
+        <span className="font-mono text-[11px] text-[#5B6E5D] dark:text-[#9FB5A1]">
           Interactive Nature · Hover facets
         </span>
 
-        <div className="inline-flex items-center gap-1 p-0.5 rounded-lg bg-[#EFF4F0] dark:bg-[#172820]">
+        <div className="inline-flex items-center gap-1 p-0.5 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018]">
           {(
             [
               { id: 'morning', label: 'Morning', icon: <Sun className="w-3 h-3" /> },
@@ -246,10 +246,10 @@ export const LowPolyNatureCanvas: React.FC = () => {
               key={mode.id}
               type="button"
               onClick={() => setSkyTime(mode.id)}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-none text-[11px] font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                 skyTime === mode.id
-                  ? 'bg-[#0F7655] text-white'
-                  : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
+                  ? 'bg-[#8CD892] text-[#172B1A]'
+                  : 'text-[#5B6E5D] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
               }`}
             >
               {mode.icon}

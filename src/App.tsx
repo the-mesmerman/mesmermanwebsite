@@ -1,44 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { AmbientNatureCanvas } from './components/AmbientNatureCanvas';
+import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
 import { AboutPage } from './pages/AboutPage';
 import { ArchivePage } from './pages/ArchivePage';
 import { HomePage } from './pages/HomePage';
+import { ProjectsPage } from './pages/ProjectsPage';
 import { StoriesPage } from './pages/StoriesPage';
 import type { PageId } from './types/site';
 
-const PAGE_ORDER: PageId[] = ['home', 'about', 'stories', 'archive'];
+const PAGE_ORDER: PageId[] = ['home', 'about', 'projects', 'stories', 'archive'];
 
 function getInitialPage(): PageId {
   const hash = window.location.hash.replace('#', '') as PageId;
   return PAGE_ORDER.includes(hash) ? hash : 'home';
 }
 
-const pageVariants = {
-  enter: (direction: number) => ({
-    opacity: 0,
-    scale: 0.968,
-    y: 10,
-    x: direction >= 0 ? 22 : -22,
-  }),
-  center: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    x: 0,
-  },
-  exit: (direction: number) => ({
-    opacity: 0,
-    scale: 0.978,
-    y: -6,
-    x: direction >= 0 ? -18 : 18,
-  }),
-};
-
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>(getInitialPage);
-  const [direction, setDirection] = useState<number>(1);
   const [selectedInterestId, setSelectedInterestId] = useState<string | undefined>(
     undefined,
   );
@@ -53,13 +34,7 @@ export default function App() {
 
   useEffect(() => {
     const onHashChange = () => {
-      const next = getInitialPage();
-      setCurrentPage((prev) => {
-        const prevIdx = PAGE_ORDER.indexOf(prev);
-        const nextIdx = PAGE_ORDER.indexOf(next);
-        setDirection(nextIdx >= prevIdx ? 1 : -1);
-        return next;
-      });
+      setCurrentPage(getInitialPage());
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -97,10 +72,6 @@ export default function App() {
 
   const navigateTo = useCallback(
     (page: PageId, options?: { interestId?: string; storyId?: string }) => {
-      const prevIdx = PAGE_ORDER.indexOf(currentPage);
-      const nextIdx = PAGE_ORDER.indexOf(page);
-      setDirection(nextIdx >= prevIdx ? 1 : -1);
-
       setSelectedInterestId(options?.interestId);
       setSelectedStoryId(options?.storyId);
       setCurrentPage(page);
@@ -112,12 +83,14 @@ export default function App() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     },
-    [currentPage],
+    [],
   );
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen flex flex-col bg-[#F4F7F4] text-[#11221A] dark:bg-[#0B1410] dark:text-[#EDF4F0] transition-colors duration-200">
+      <div className="relative min-h-screen flex flex-col bg-[#F7F9F3] text-[#223024] dark:bg-[#162018] dark:text-[#EDF3EA] transition-colors duration-200">
+        <AmbientNatureCanvas isDark={isDark} />
+
         <Navbar
           currentPage={currentPage}
           onNavigate={(page) => navigateTo(page)}
@@ -125,16 +98,14 @@ export default function App() {
           onToggleTheme={toggleTheme}
         />
 
-        <main className="flex-1 overflow-x-hidden">
-          <AnimatePresence mode="wait" custom={direction} initial={false}>
+        <main className="relative z-10 flex-1 overflow-x-hidden">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={currentPage}
-              custom={direction}
-              variants={pageVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             >
               {currentPage === 'home' && (
                 <HomePage isDark={isDark} onNavigate={navigateTo} />
@@ -144,6 +115,9 @@ export default function App() {
                   onNavigate={(page) => navigateTo(page)}
                   initialInterestId={selectedInterestId}
                 />
+              )}
+              {currentPage === 'projects' && (
+                <ProjectsPage onNavigate={(page) => navigateTo(page)} />
               )}
               {currentPage === 'stories' && (
                 <StoriesPage
@@ -158,6 +132,8 @@ export default function App() {
           </AnimatePresence>
         </main>
 
+        <Footer onNavigate={(page) => navigateTo(page)} />
+
         <AnimatePresence>
           {showFloatingTop && (
             <motion.button
@@ -165,11 +141,10 @@ export default function App() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              whileTap={{ scale: 0.96 }}
-              transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               aria-label="Scroll to top"
-              className="fixed bottom-6 right-6 z-30 w-10 h-10 rounded-lg border border-[#0F2A1D]/15 dark:border-[#D6E8DE]/15 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] shadow-sm hover:border-[#0F7655] dark:hover:border-[#34D399] transition-colors duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
+              className="square-stamp-btn fixed bottom-6 right-6 z-30 w-10 h-10 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[#132B16] flex items-center justify-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#389442]"
             >
               <ArrowUp className="w-4 h-4" />
             </motion.button>

@@ -17,7 +17,7 @@ export const MonogramLogo: React.FC<MonogramLogoProps> = ({
         ? 'w-7 h-7 rounded-lg'
         : size <= 34
           ? 'w-8 h-8 rounded-lg'
-          : 'w-9 h-9 rounded-lg';
+          : 'w-9 h-9 rounded-xl';
 
   return (
     <img
@@ -25,7 +25,7 @@ export const MonogramLogo: React.FC<MonogramLogoProps> = ({
       alt="Ishan Ganti logo"
       width={size}
       height={size}
-      className={`${sizeClass} object-cover shrink-0 border border-emerald-950/15 dark:border-emerald-500/30 select-none ${className}`}
+      className={`${sizeClass} object-cover shrink-0 border border-[#A6D6AA] dark:border-[#497A50] select-none ${className}`}
     />
   );
 };

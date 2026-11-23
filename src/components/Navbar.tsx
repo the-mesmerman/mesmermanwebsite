@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Menu, Moon, Sun, X } from 'lucide-react';
-import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { NAV_ITEMS } from '../data/siteData';
 import type { PageId } from '../types/site';
 import { MonogramLogo } from './MonogramLogo';
@@ -19,12 +19,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 240,
-    damping: 32,
-    restDelta: 0.001,
-  });
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -45,31 +39,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-[#F4F7F4]/95 dark:bg-[#0B1410]/95 transition-colors duration-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
-          {/* Zone 1: Brand Mark */}
-          <motion.button
+      <header className="sticky top-0 z-40 border-b border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3]/96 dark:bg-[#162018]/96 transition-colors duration-200">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6">
+          {/* Brand Mark with Rounded Logo */}
+          <button
             type="button"
-            whileTap={{ scale: 0.96 }}
             onClick={() => handleSelectPage('home')}
-            className="flex items-center gap-3 text-left whitespace-nowrap shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655] rounded-lg py-1 pr-2"
+            className="flex items-center gap-3 text-left whitespace-nowrap shrink-0 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58] rounded-none py-1 pr-2"
             aria-label="Ishan Ganti Home"
           >
-            <motion.div
-              whileHover={{ rotate: [0, -7, 6, 0], scale: 1.07 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            >
+            <span className="transition-transform duration-150 group-hover:-translate-y-0.5">
               <MonogramLogo size={32} />
-            </motion.div>
-            <span className="font-display text-sm sm:text-base font-semibold tracking-tight text-[#11221A] dark:text-[#EDF4F0] whitespace-nowrap shrink-0">
+            </span>
+            <span className="font-display text-base font-medium tracking-tight text-[#223024] dark:text-[#EDF3EA] whitespace-nowrap shrink-0">
               Ishan Ganti
             </span>
-          </motion.button>
+          </button>
 
-          {/* Zone 2: Clean Single-Line Tabs */}
+          {/* Simple Rectangular Text Navigation */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-7 text-sm font-medium"
+            className="hidden md:flex items-center gap-2 text-sm"
           >
             {NAV_ITEMS.map((item) => {
               const active = currentPage === item.id;
@@ -78,42 +68,54 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => handleSelectPage(item.id)}
-                  className={`relative py-2 whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655] rounded px-1 ${
+                  className={`relative px-3 py-2 rounded-none whitespace-nowrap shrink-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#389442] ${
                     active
-                      ? 'text-[#0F7655] dark:text-[#34D399] font-semibold'
-                      : 'text-[#4A6256] dark:text-[#94ABA0] hover:text-[#11221A] dark:hover:text-[#EDF4F0]'
+                      ? 'text-[#236B2C] dark:text-[#7EE686] font-medium'
+                      : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                   }`}
                 >
                   {item.label}
                   {active && (
-                    <motion.span
-                      layoutId="nav-active-underline"
-                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    <motion.svg
+                      layoutId="nav-ink-underline"
+                      viewBox="0 0 60 6"
+                      fill="none"
+                      preserveAspectRatio="none"
                       aria-hidden="true"
-                      className="absolute inset-x-1 -bottom-[1px] h-[2px] bg-[#0F7655] dark:bg-[#34D399]"
-                    />
+                      className="absolute inset-x-2 -bottom-0.5 h-[5px] text-[#45BD52] dark:text-[#7EE686]"
+                    >
+                      <motion.path
+                        d="M1 4 C18 1.5, 42 5, 59 2.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                      />
+                    </motion.svg>
                   )}
                 </button>
               );
             })}
           </nav>
 
-          {/* Zone 3: Theme Toggle + Mobile Menu */}
+          {/* Square Theme Toggle + Mobile Menu */}
           <div className="flex items-center gap-2 shrink-0">
             <button
               type="button"
               onClick={onToggleTheme}
               aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] hover:border-[#0F7655]/50 dark:hover:border-[#34D399]/50 text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
+              className="square-stamp-mint inline-flex items-center gap-2 px-3 py-2 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] text-[#223024] dark:text-[#EDF3EA] hover:border-[#4F9D58] dark:hover:border-[#8CD892] text-xs font-medium whitespace-nowrap shrink-0 min-h-[38px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58]"
             >
               {isDark ? (
                 <>
-                  <Sun className="w-3.5 h-3.5 text-[#FBBF24]" />
+                  <Sun className="w-3.5 h-3.5 text-[#F7D15C]" />
                   <span className="hidden sm:inline">Light</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-3.5 h-3.5 text-[#0F7655]" />
+                  <Moon className="w-3.5 h-3.5 text-[#4F9D58]" />
                   <span className="hidden sm:inline">Dark</span>
                 </>
               )}
@@ -123,20 +125,15 @@ export const Navbar: React.FC<NavbarProps> = ({
               type="button"
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation menu"
-              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-[#11221A] dark:text-[#EDF4F0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F7655]"
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] text-[#223024] dark:text-[#EDF3EA] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58]"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4" />
             </button>
           </div>
         </div>
-        <motion.div
-          aria-hidden="true"
-          style={{ scaleX: smoothProgress }}
-          className="h-[2px] bg-[#0F7655] dark:bg-[#34D399] origin-left"
-        />
       </header>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Square Mobile Navigation Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <div
@@ -149,22 +146,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-              className="fixed inset-0 bg-[#0B1410]/65"
+              transition={{ duration: 0.16 }}
+              className="fixed inset-0 bg-[#223024]/40 dark:bg-black/65"
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-xs h-full bg-[#F4F7F4] dark:bg-[#0B1410] border-l border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 p-6 flex flex-col justify-between overflow-y-auto"
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full max-w-xs h-full bg-[#F7F9F3] dark:bg-[#162018] border-l border-[#C9E1C7] dark:border-[#314735] p-6 flex flex-col justify-between overflow-y-auto rounded-none"
             >
               <div>
-                <div className="flex items-center justify-between pb-6 border-b border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11">
+                <div className="flex items-center justify-between pb-5 border-b border-[#C9E1C7] dark:border-[#314735]">
                   <div className="flex items-center gap-3">
-                    <MonogramLogo size={32} />
-                    <span className="font-display text-sm font-semibold tracking-tight text-[#11221A] dark:text-[#EDF4F0]">
+                    <MonogramLogo size={30} />
+                    <span className="font-display text-sm font-medium text-[#223024] dark:text-[#EDF3EA]">
                       Ishan Ganti
                     </span>
                   </div>
@@ -172,13 +169,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     type="button"
                     onClick={() => setMobileOpen(false)}
                     aria-label="Close navigation menu"
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 text-[#4A6256] dark:text-[#94ABA0]"
+                    className="inline-flex items-center justify-center w-9 h-9 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] text-[#5B6E5D] dark:text-[#9FB5A1]"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
 
-                <nav className="mt-6 flex flex-col gap-1" aria-label="Mobile pages">
+                <nav className="mt-6 flex flex-col gap-1.5" aria-label="Mobile pages">
                   {NAV_ITEMS.map((item) => {
                     const active = currentPage === item.id;
                     return (
@@ -186,36 +183,36 @@ export const Navbar: React.FC<NavbarProps> = ({
                         key={item.id}
                         type="button"
                         onClick={() => handleSelectPage(item.id)}
-                        className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-150 min-h-[44px] flex items-center justify-between ${
+                        className={`w-full text-left px-4 py-3 rounded-none border transition-colors duration-150 min-h-[44px] flex items-center justify-between ${
                           active
-                            ? 'bg-[#0F7655] text-white'
-                            : 'text-[#11221A] dark:text-[#EDF4F0] hover:bg-[#E9EFEA] dark:hover:bg-[#172820]'
+                            ? 'bg-[#7DE386] border-[#389442] text-[#132B16] font-medium'
+                            : 'border-transparent text-[#223024] dark:text-[#EDF3EA] hover:border-[#BFE2BD] dark:hover:border-[#314735] hover:bg-[#DAF4D7]/70 dark:hover:bg-[#1D2A20]'
                         }`}
                       >
-                        <span className="text-sm font-medium">{item.label}</span>
+                        <span className="text-sm">{item.label}</span>
                       </button>
                     );
                   })}
                 </nav>
               </div>
 
-              <div className="pt-6 border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 flex items-center justify-between">
-                <span className="text-xs text-[#647A6F] dark:text-[#748B80]">
+              <div className="pt-5 border-t border-[#C9E1C7] dark:border-[#314735] flex items-center justify-between">
+                <span className="text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
                   Theme
                 </span>
                 <button
                   type="button"
                   onClick={onToggleTheme}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-white dark:bg-[#111E18] text-sm font-medium text-[#11221A] dark:text-[#EDF4F0] min-h-[44px]"
+                  className="square-stamp-mint inline-flex items-center gap-2 px-4 py-2 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[40px]"
                 >
                   {isDark ? (
                     <>
-                      <Sun className="w-4 h-4 text-[#FBBF24]" />
+                      <Sun className="w-3.5 h-3.5 text-[#F7D15C]" />
                       <span>Light</span>
                     </>
                   ) : (
                     <>
-                      <Moon className="w-4 h-4 text-[#0F7655]" />
+                      <Moon className="w-3.5 h-3.5 text-[#4F9D58]" />
                       <span>Dark</span>
                     </>
                   )}

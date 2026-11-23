@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,37 +15,30 @@
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link
-      rel="icon"
-      type="image/png"
-      href="%BASE_URL%favicon.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      href="%BASE_URL%logo.png"
-    />
+    <link rel="icon" type="image/png" href="%BASE_URL%favicon.png" />
+    <link rel="apple-touch-icon" href="%BASE_URL%logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <script>
       (function () {
         try {
           var saved = localStorage.getItem('ig-theme');
-          if (saved === 'light') {
-            document.documentElement.classList.remove('dark');
-          } else {
+          if (saved === 'dark') {
             document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
           }
         } catch (e) {
-          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('dark');
         }
       })();
     </script>
   </head>
-  <body class="bg-[#F4F7F4] text-[#11221A] dark:bg-[#0B1410] dark:text-[#EDF4F0] antialiased selection:bg-[#0F7655]/20 selection:text-[#0F7655] dark:selection:bg-[#34D399]/25 dark:selection:text-[#6EE7B7]">
+  <body class="bg-[#F7F9F3] text-[#223024] dark:bg-[#162018] dark:text-[#EDF3EA] antialiased selection:bg-[#CFEECF] selection:text-[#172B1A] dark:selection:bg-[#497A50] dark:selection:text-[#EDF3EA]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -420,42 +420,41 @@ export const RubiksCube3D: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#EFF4F0] dark:bg-[#0D1813] overflow-hidden">
+    <div className="flex flex-col rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] overflow-hidden">
       <div className="relative h-72 sm:h-80 w-full">
         <div
           ref={mountRef}
           className="w-full h-full cursor-grab active:cursor-grabbing"
           aria-label="Interactive 3D Rubik's Cube — drag to inspect"
         />
-        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#647A6F] dark:text-[#748B80]">
+        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#5B6E5D] dark:text-[#9FB5A1]">
           <span>Drag to rotate view</span>
           <span className="tabular-nums">Moves: {moveCount}</span>
         </div>
       </div>
 
-      <div className="border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div className="border-t border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] px-3 py-2.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Cube face turns">
           {(Object.keys(MOVE_SPECS) as FaceMove[]).map((move) => (
-            <motion.button
+            <button
               key={move}
               type="button"
-              whileTap={{ scale: 0.95 }}
               onClick={() => handleTurn(move)}
               title={`Turn ${MOVE_SPECS[move].label} face`}
-              className="px-2.5 py-1.5 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#F4F7F4] dark:bg-[#172820] hover:border-[#0F7655] dark:hover:border-[#34D399] text-xs font-mono font-medium text-[#11221A] dark:text-[#EDF4F0] transition-colors duration-150 min-h-[36px] min-w-[36px]"
+              className="square-stamp-mint px-2.5 py-1.5 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] hover:border-[#4F9D58] dark:hover:border-[#8CD892] text-xs font-mono font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[36px] min-w-[36px]"
             >
               {move}
-            </motion.button>
+            </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => setAutoOrbit((o) => !o)}
             title={autoOrbit ? 'Pause ambient orbit' : 'Resume ambient orbit'}
             aria-label={autoOrbit ? 'Pause ambient orbit' : 'Resume ambient orbit'}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#F4F7F4] dark:bg-[#172820] text-[#4A6256] dark:text-[#94ABA0] hover:border-[#0F7655] dark:hover:border-[#34D399] hover:text-[#11221A] dark:hover:text-[#EDF4F0] transition-colors duration-150"
+            className="square-stamp-mint inline-flex items-center justify-center w-9 h-9 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] text-[#5B6E5D] dark:text-[#9FB5A1] hover:border-[#4F9D58] dark:hover:border-[#8CD892] hover:text-[#223024] dark:hover:text-[#EDF3EA]"
           >
             {autoOrbit ? (
               <Pause className="w-3.5 h-3.5" />
@@ -467,7 +466,7 @@ export const RubiksCube3D: React.FC = () => {
             type="button"
             onClick={handleScramble}
             disabled={isTurning}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0F7655] hover:bg-[#0D6448] disabled:opacity-60 text-white text-xs font-medium transition-colors duration-150 min-h-[36px] whitespace-nowrap shrink-0"
+            className="square-stamp-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#4D9955] bg-[#8CD892] hover:bg-[#7CCF83] disabled:opacity-60 text-[#172B1A] text-xs font-medium min-h-[36px] whitespace-nowrap shrink-0"
           >
             <Shuffle className="w-3.5 h-3.5" />
             <span>Scramble</span>
@@ -475,7 +474,7 @@ export const RubiksCube3D: React.FC = () => {
           <button
             type="button"
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 hover:border-[#0F7655]/60 dark:hover:border-[#34D399]/60 text-[#11221A] dark:text-[#EDF4F0] text-xs font-medium transition-colors duration-150 min-h-[36px] whitespace-nowrap shrink-0"
+            className="square-stamp-mint inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] hover:border-[#4F9D58] dark:hover:border-[#8CD892] text-[#223024] dark:text-[#EDF3EA] text-xs font-medium min-h-[36px] whitespace-nowrap shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>

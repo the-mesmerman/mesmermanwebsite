@@ -60,7 +60,7 @@ export const TechMatrixVisual: React.FC = () => {
         to: target,
         progress: -idx * 0.08,
         speed: 1.45,
-        color: isDark ? '#34D399' : '#059669',
+        color: isDark ? '#8CD892' : '#3D8B47',
       });
     });
   }, []);
@@ -84,7 +84,7 @@ export const TechMatrixVisual: React.FC = () => {
         to: target,
         progress: 0,
         speed: 1.25,
-        color: '#F59E0B',
+        color: '#F5B841',
       });
     }, 950);
 
@@ -159,11 +159,11 @@ export const TechMatrixVisual: React.FC = () => {
         ctx.lineTo(x2, y2);
         ctx.strokeStyle = isConnected
           ? isDark
-            ? 'rgba(52, 211, 153, 0.7)'
-            : 'rgba(5, 150, 105, 0.65)'
+            ? 'rgba(140, 216, 146, 0.78)'
+            : 'rgba(79, 157, 88, 0.72)'
           : isDark
-            ? 'rgba(148, 163, 184, 0.18)'
-            : 'rgba(15, 23, 42, 0.14)';
+            ? 'rgba(159, 181, 161, 0.24)'
+            : 'rgba(79, 157, 88, 0.2)';
         ctx.lineWidth = isConnected ? 2 : 1.1;
         ctx.setLineDash(isConnected ? [] : [4, 4]);
         ctx.stroke();
@@ -190,10 +190,10 @@ export const TechMatrixVisual: React.FC = () => {
         const y = (nFrom.ny + (nTo.ny - nFrom.ny) * pkt.progress) * height;
 
         ctx.beginPath();
-        ctx.arc(x, y, 7, 0, Math.PI * 2);
+        ctx.arc(x, y, 6.5, 0, Math.PI * 2);
         ctx.fillStyle = isDark
-          ? 'rgba(52, 211, 153, 0.25)'
-          : 'rgba(5, 150, 105, 0.2)';
+          ? 'rgba(140, 216, 146, 0.32)'
+          : 'rgba(140, 216, 146, 0.45)';
         ctx.fill();
 
         ctx.beginPath();
@@ -203,7 +203,7 @@ export const TechMatrixVisual: React.FC = () => {
       });
       packetsRef.current = nextPackets;
 
-      // Decay node glows & draw nodes
+      // Decay node glows & draw square nodes
       NODES.forEach((node) => {
         nodeGlowRef.current[node.id] = Math.max(
           0,
@@ -219,39 +219,35 @@ export const TechMatrixVisual: React.FC = () => {
             (b === selected && a === node.id),
         );
 
-        // Expanding ripple ring on packet arrival/click
         if (glow > 0.02) {
-          ctx.beginPath();
-          ctx.arc(x, y, 16 + (1 - glow) * 18, 0, Math.PI * 2);
+          const ringSize = 18 + (1 - glow) * 16;
           ctx.strokeStyle = isDark
-            ? `rgba(52, 211, 153, ${glow * 0.55})`
-            : `rgba(5, 150, 105, ${glow * 0.45})`;
+            ? `rgba(140, 216, 146, ${glow * 0.55})`
+            : `rgba(79, 157, 88, ${glow * 0.48})`;
           ctx.lineWidth = 1.5;
-          ctx.stroke();
+          ctx.strokeRect(x - ringSize / 2, y - ringSize / 2, ringSize, ringSize);
         }
 
-        const r = isSelected ? 17 : 14;
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        const half = isSelected ? 14 : 11;
         if (isSelected) {
-          ctx.fillStyle = '#0F7655';
-          ctx.strokeStyle = isDark ? '#6EE7B7' : '#0B533C';
+          ctx.fillStyle = '#8CD892';
+          ctx.strokeStyle = isDark ? '#EDF3EA' : '#2E6B37';
         } else if (isNeighbor) {
-          ctx.fillStyle = isDark ? '#15805D' : '#10B981';
-          ctx.strokeStyle = isDark ? '#34D399' : '#0F7655';
+          ctx.fillStyle = isDark ? '#273A2B' : '#CFEECF';
+          ctx.strokeStyle = isDark ? '#8CD892' : '#4F9D58';
         } else {
-          ctx.fillStyle = isDark ? '#111E18' : '#FFFFFF';
-          ctx.strokeStyle = isDark ? '#2E4C3E' : '#BDCBC3';
+          ctx.fillStyle = isDark ? '#1D2A20' : '#FCFDF9';
+          ctx.strokeStyle = isDark ? '#314735' : '#C9E1C7';
         }
-        ctx.lineWidth = 2;
-        ctx.fill();
-        ctx.stroke();
+        ctx.lineWidth = 1.8;
+        ctx.fillRect(x - half, y - half, half * 2, half * 2);
+        ctx.strokeRect(x - half, y - half, half * 2, half * 2);
 
         // Label below node
         ctx.font = '500 11px "JetBrains Mono", monospace';
         ctx.textAlign = 'center';
-        ctx.fillStyle = isDark ? '#94ABA0' : '#4A6256';
-        ctx.fillText(node.label, x, y + r + 15);
+        ctx.fillStyle = isDark ? '#9FB5A1' : '#5B6E5D';
+        ctx.fillText(node.label, x, y + half + 15);
       });
 
       if (!prefersReduced) {
@@ -269,25 +265,25 @@ export const TechMatrixVisual: React.FC = () => {
   }, [triggerWave]);
 
   return (
-    <div className="flex flex-col rounded-xl border border-[#0F2A1D]/12 dark:border-[#D6E8DE]/12 bg-[#EFF4F0] dark:bg-[#0D1813] overflow-hidden">
+    <div className="flex flex-col rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] overflow-hidden">
       <div className="relative h-64 sm:h-72 w-full">
         <canvas
           ref={canvasRef}
           className="w-full h-full block cursor-pointer"
           aria-label="Interactive software data-flow simulation — click any node to dispatch signals"
         />
-        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#647A6F] dark:text-[#748B80]">
+        <div className="pointer-events-none absolute top-3 left-3.5 right-3.5 flex items-center justify-between text-[11px] font-mono text-[#5B6E5D] dark:text-[#9FB5A1]">
           <span>Click any node to dispatch wave</span>
           <span>Live graph signal</span>
         </div>
       </div>
 
-      <div className="border-t border-[#0F2A1D]/11 dark:border-[#D6E8DE]/11 bg-white dark:bg-[#111E18] px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs text-[#4A6256] dark:text-[#94ABA0]">
+      <div className="border-t border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
         <div className="flex items-center gap-2">
-          <Radio className="w-3.5 h-3.5 text-[#0F7655] dark:text-[#34D399]" />
+          <Radio className="w-3.5 h-3.5 text-[#3D8B47] dark:text-[#8CD892]" />
           <span>
             Active node:{' '}
-            <strong className="font-mono text-[#0F7655] dark:text-[#34D399]">
+            <strong className="font-mono text-[#2E6B37] dark:text-[#8CD892]">
               {NODES[activeNode].label}
             </strong>
           </span>
@@ -296,7 +292,7 @@ export const TechMatrixVisual: React.FC = () => {
         <button
           type="button"
           onClick={() => triggerWave(activeNode)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#0F7655] hover:bg-[#0D6448] text-white text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0"
+          className="square-stamp-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#4D9955] bg-[#8CD892] hover:bg-[#7CCF83] text-[#172B1A] text-xs font-medium whitespace-nowrap shrink-0"
         >
           <Play className="w-3 h-3" />
           <span>Pulse Signal</span>

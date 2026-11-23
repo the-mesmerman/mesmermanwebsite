@@ -19,11 +19,11 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   if (failed || !src) {
     return (
       <div
-        className={`w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-br from-slate-900 via-[#0D1424] to-blue-950 text-slate-200 ${className}`}
+        className={`w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#DCE8D5] dark:bg-[#263328] text-[#292D29] dark:text-[#EAECE4] ${className}`}
       >
-        <BookOpen className="w-8 h-8 text-blue-400 mb-3 opacity-80" />
+        <BookOpen className="w-7 h-7 text-[#344B39] dark:text-[#A8B99A] mb-3 opacity-80" />
         {fallbackTitle && (
-          <span className="font-display text-sm font-semibold tracking-tight">
+          <span className="font-display text-sm font-medium tracking-tight">
             {fallbackTitle}
           </span>
         )}
