@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { Send } from 'lucide-react';
 
 const INK_EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -343,19 +342,11 @@ export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) 
         </div>
       </div>
 
-      {/* Playful Light-Green Interactive Strip */}
+      {/* Subtle Caption Strip */}
       <div className="border-t border-[#BFE2BD] dark:border-[#314735] px-4 py-2.5 flex items-center justify-between gap-3 bg-[#E2F6DF] dark:bg-[#19261C]">
         <span className="font-mono text-[11px] text-[#3F6343] dark:text-[#9FB5A1]">
           Sketchbook · 3D Doodle Study
         </span>
-        <button
-          type="button"
-          onClick={handleLaunchPlane}
-          className="square-stamp-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[11px] font-medium text-[#132B16] whitespace-nowrap shrink-0"
-        >
-          <Send className="w-3 h-3" />
-          <span>Fly Plane</span>
-        </button>
       </div>
     </div>
   );
