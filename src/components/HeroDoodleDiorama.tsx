@@ -10,22 +10,24 @@ interface HeroDoodleDioramaProps {
 export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) => {
   const stageRef = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0, nx: 0, ny: 0 });
   const [planeFlight, setPlaneFlight] = useState(0);
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (prefersReduced || !stageRef.current) return;
     const rect = stageRef.current.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
     setTilt({
-      rx: (0.5 - py) * 10,
-      ry: (px - 0.5) * 12,
+      rx: -ny * 18,
+      ry: nx * 20,
+      nx,
+      ny,
     });
   };
 
   const handlePointerLeave = () => {
-    setTilt({ rx: 0, ry: 0 });
+    setTilt({ rx: 0, ry: 0, nx: 0, ny: 0 });
   };
 
   const handleLaunchPlane = () => {
@@ -56,7 +58,7 @@ export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) 
           }
         }}
         aria-label="Interactive 3D botanical sketchbook doodle — move pointer to tilt or click to fly the paper plane"
-        className="relative aspect-[4/3] w-full overflow-hidden cursor-pointer select-none [perspective:950px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58]"
+        className="relative aspect-[4/3] w-full overflow-hidden cursor-pointer select-none [perspective:800px] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58]"
       >
         <div
           aria-hidden="true"
@@ -74,8 +76,10 @@ export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) 
           <svg
             viewBox="0 0 440 330"
             fill="none"
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ transform: 'translateZ(-16px) scale(1.015)' }}
+            className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-200 ease-out"
+            style={{
+              transform: `translate3d(${tilt.nx * -10}px, ${tilt.ny * -8}px, -28px) scale(1.04)`,
+            }}
           >
             {[80, 140, 200, 260, 320, 380].map((x) => (
               <line key={`vx-${x}`} x1={x} y1="24" x2={x} y2="306" stroke={gridLine} strokeWidth="1" />
@@ -116,8 +120,10 @@ export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) 
           <svg
             viewBox="0 0 440 330"
             fill="none"
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ transform: 'translateZ(14px)' }}
+            className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-200 ease-out"
+            style={{
+              transform: `translate3d(${tilt.nx * 8}px, ${tilt.ny * 6}px, 22px)`,
+            }}
           >
             {/* Colorful 3D Isometric Cube */}
             <g transform="translate(278, 162)">
@@ -269,8 +275,10 @@ export const HeroDoodleDiorama: React.FC<HeroDoodleDioramaProps> = ({ isDark }) 
           <svg
             viewBox="0 0 440 330"
             fill="none"
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ transform: 'translateZ(36px)' }}
+            className="absolute inset-0 w-full h-full pointer-events-none transition-transform duration-200 ease-out"
+            style={{
+              transform: `translate3d(${tilt.nx * 20}px, ${tilt.ny * 16}px, 52px)`,
+            }}
           >
             <motion.path
               d="M214 148 C242 132, 266 106, 294 84"
