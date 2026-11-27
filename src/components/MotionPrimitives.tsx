@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   motion,
   useReducedMotion,
@@ -6,6 +6,7 @@ import {
 } from 'motion/react';
 
 export const CALM_EASE = [0.22, 1, 0.36, 1] as const;
+export const ZOOM_SETTLE_EASE = [0.16, 1, 0.3, 1] as const;
 
 export const SPRING_FLUID = {
   type: 'spring' as const,
@@ -20,6 +21,59 @@ export const SPRING_SNAPPY = {
   damping: 32,
   mass: 0.72,
 };
+
+interface IntroRevealContextValue {
+  isIntroBlocking: boolean;
+  introRevealDelay: number;
+  slideDistance: number;
+}
+
+const IntroRevealContext = createContext<IntroRevealContextValue>({
+  isIntroBlocking: false,
+  introRevealDelay: 0,
+  slideDistance: 64,
+});
+
+function getResponsiveSlideDistance(width: number): number {
+  if (width < 640) return 28;
+  if (width < 1024) return 48;
+  return 68;
+}
+
+export const IntroRevealProvider: React.FC<{
+  isIntroBlocking: boolean;
+  introRevealDelay: number;
+  children: React.ReactNode;
+}> = ({ isIntroBlocking, introRevealDelay, children }) => {
+  const prefersReduced = useReducedMotion();
+  const [rawSlide, setRawSlide] = useState<number>(() =>
+    typeof window !== 'undefined'
+      ? getResponsiveSlideDistance(window.innerWidth)
+      : 64,
+  );
+
+  useEffect(() => {
+    const onResize = () => {
+      setRawSlide(getResponsiveSlideDistance(window.innerWidth));
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
+  const slideDistance = prefersReduced ? 0 : rawSlide;
+
+  return (
+    <IntroRevealContext.Provider
+      value={{ isIntroBlocking, introRevealDelay, slideDistance }}
+    >
+      {children}
+    </IntroRevealContext.Provider>
+  );
+};
+
+export function useIntroReveal(): IntroRevealContextValue {
+  return useContext(IntroRevealContext);
+}
 
 interface ReactiveSurfaceProps {
   as?: 'div' | 'article' | 'section' | 'button';
@@ -104,29 +158,50 @@ interface RevealBlockProps {
   className?: string;
   delay?: number;
   y?: number;
+  direction?: 'up' | 'left' | 'right';
   immediate?: boolean;
 }
 
-/** Scroll-triggered (or immediate hero) depth & spring entrance for headings/sections */
+/** Directional/scroll-triggered entrance synced with the intro zoom-in reveal */
 export const RevealBlock: React.FC<RevealBlockProps> = ({
   children,
   className = '',
   delay = 0,
   y = 14,
+  direction = 'up',
   immediate = false,
 }) => {
   const prefersReduced = useReducedMotion();
+  const { isIntroBlocking, introRevealDelay, slideDistance } = useIntroReveal();
 
   if (prefersReduced) {
     return <div className={className}>{children}</div>;
   }
 
+  const initialX =
+    direction === 'left'
+      ? -slideDistance
+      : direction === 'right'
+        ? slideDistance
+        : 0;
+  const initialY = direction === 'up' ? y : 0;
+  const totalDelay = introRevealDelay + delay;
+
+  const activeTransition =
+    direction === 'up'
+      ? { ...SPRING_FLUID, delay: totalDelay }
+      : { duration: 0.82, delay: totalDelay, ease: ZOOM_SETTLE_EASE };
+
   if (immediate) {
     return (
       <motion.div
-        initial={{ opacity: 0, y, scale: 0.99 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ ...SPRING_FLUID, delay }}
+        initial={{ opacity: 0, x: initialX, y: initialY, scale: 0.97 }}
+        animate={
+          isIntroBlocking
+            ? { opacity: 0, x: initialX, y: initialY, scale: 0.97 }
+            : { opacity: 1, x: 0, y: 0, scale: 1 }
+        }
+        transition={isIntroBlocking ? { duration: 0 } : activeTransition}
         className={className}
       >
         {children}
@@ -136,10 +211,12 @@ export const RevealBlock: React.FC<RevealBlockProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y, scale: 0.99 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, x: initialX, y: initialY, scale: 0.985 }}
+      whileInView={
+        isIntroBlocking ? undefined : { opacity: 1, x: 0, y: 0, scale: 1 }
+      }
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ ...SPRING_FLUID, delay }}
+      transition={activeTransition}
       className={className}
     >
       {children}

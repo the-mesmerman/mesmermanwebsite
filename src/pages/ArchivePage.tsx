@@ -7,6 +7,7 @@ import {
   RevealBlock,
   SPRING_FLUID,
   SPRING_SNAPPY,
+  useIntroReveal,
 } from '../components/MotionPrimitives';
 import { DoodlePencil } from '../components/SketchDoodles';
 import { ARCHIVE_MILESTONES } from '../data/siteData';
@@ -26,6 +27,7 @@ const ERA_TABS: { id: EraFilter; label: string }[] = [
 ];
 
 export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
+  const { isIntroBlocking, introRevealDelay } = useIntroReveal();
   const [era, setEra] = useState<EraFilter>('all');
   const [newestFirst, setNewestFirst] = useState(true);
 
@@ -40,14 +42,14 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
   }, [era, newestFirst]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20 overflow-x-clip">
       <Breadcrumbs
         items={[{ label: 'Home', page: 'home' }, { label: 'Archive' }]}
         onNavigate={onNavigate}
       />
 
       <header className="space-y-4 pb-8 border-b border-[#BFE2BD] dark:border-[#314735]">
-        <RevealBlock immediate delay={0.02} y={10}>
+        <RevealBlock immediate direction="left" delay={0.02}>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="space-y-2.5">
               <div className="flex items-center gap-2">
@@ -75,7 +77,7 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
         </RevealBlock>
 
         {/* Efficient Era Filter & Sort Bar */}
-        <RevealBlock immediate delay={0.08} y={8}>
+        <RevealBlock immediate direction="right" delay={0.08}>
           <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
             <div
               className="inline-flex flex-wrap items-center gap-1 p-1 rounded-none bg-[#FCFDF9] dark:bg-[#1D2A20] border border-[#BFE2BD] dark:border-[#314735]"
@@ -133,11 +135,11 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
                 as="article"
                 key={milestone.id}
                 initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                whileInView={isIntroBlocking ? undefined : { opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
                 transition={{
                   ...SPRING_FLUID,
-                  delay: Math.min(idx * 0.025, 0.16),
+                  delay: (idx < 4 ? introRevealDelay : 0) + Math.min(idx * 0.025, 0.16),
                 }}
                 className={`p-4 sm:p-5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-start transition-colors duration-150 ${
                   isCurrent

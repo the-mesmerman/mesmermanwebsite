@@ -9,6 +9,8 @@ import {
   ReactiveSurface,
   RevealBlock,
   SPRING_FLUID,
+  ZOOM_SETTLE_EASE,
+  useIntroReveal,
 } from '../components/MotionPrimitives';
 import {
   DoodleIsoCube,
@@ -37,13 +39,15 @@ const INTEREST_DOODLE_MAP: Record<string, React.ReactNode> = {
 };
 
 export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
+  const { isIntroBlocking, introRevealDelay, slideDistance } = useIntroReveal();
+
   return (
-    <div className="space-y-20 pb-20">
+    <div className="space-y-20 pb-20 overflow-x-clip">
       {/* Minimalist Two-Column Hero */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 md:pt-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           <div className="lg:col-span-6 space-y-6">
-            <RevealBlock immediate delay={0.02} y={10}>
+            <RevealBlock immediate direction="left" delay={0.02}>
               <div className="flex items-center gap-2.5">
                 <DoodleLeafSprig className="w-7 h-7" />
                 <span className="font-mono text-xs tracking-wide px-2 py-0.5 border border-[#A6E8AA] dark:border-[#314735] bg-[#DAF4D7] dark:bg-[#253D29] text-[#21632A] dark:text-[#9AF0A2]">
@@ -52,7 +56,7 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
               </div>
             </RevealBlock>
 
-            <RevealBlock immediate delay={0.07} y={12}>
+            <RevealBlock immediate direction="left" delay={0.08}>
               <div className="space-y-4">
                 <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight leading-[1.12] text-[#223024] dark:text-[#EDF3EA]">
                   Hey, I’m{' '}
@@ -69,7 +73,7 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
               </div>
             </RevealBlock>
 
-            <RevealBlock immediate delay={0.13} y={10}>
+            <RevealBlock immediate direction="left" delay={0.14}>
               <div className="flex flex-wrap items-center gap-3.5 pt-1">
                 <button
                   type="button"
@@ -93,9 +97,21 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 14, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ ...SPRING_FLUID, delay: 0.1 }}
+            initial={{ opacity: 0, x: slideDistance, scale: 0.95 }}
+            animate={
+              isIntroBlocking
+                ? { opacity: 0, x: slideDistance, scale: 0.95 }
+                : { opacity: 1, x: 0, scale: 1 }
+            }
+            transition={
+              isIntroBlocking
+                ? { duration: 0 }
+                : {
+                    duration: 0.84,
+                    delay: introRevealDelay + 0.08,
+                    ease: ZOOM_SETTLE_EASE,
+                  }
+            }
             className="lg:col-span-6"
           >
             <HeroDoodleDiorama isDark={isDark} />
@@ -106,8 +122,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
       {/* Brief About & Square Interests Grid */}
       <section className="border-y border-[#BFE2BD] dark:border-[#314735] bg-[#E2F6DF]/78 dark:bg-[#19261C]/80">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16 space-y-8">
-          <RevealBlock className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="space-y-2 max-w-[54ch]">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <RevealBlock direction="left" className="space-y-2 max-w-[54ch]">
               <div className="flex items-center gap-2">
                 <DoodleTinyFlower className="w-6 h-6" />
                 <span className="font-mono text-xs text-[#3F6343] dark:text-[#9FB5A1]">
@@ -121,17 +137,19 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
                 From speedcubing and mathematical spirals to novels and spending
                 time outdoors—pick any square to explore it on the About page.
               </p>
-            </div>
+            </RevealBlock>
 
-            <button
-              type="button"
-              onClick={() => onNavigate('about', { interestId: 'technology' })}
-              className="square-stamp-mint group inline-flex items-center gap-2 px-4 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0 self-start sm:self-auto"
-            >
-              <span>Explore All</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686] transition-transform duration-150 group-hover:translate-x-0.5" />
-            </button>
-          </RevealBlock>
+            <RevealBlock direction="right" delay={0.05} className="self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => onNavigate('about', { interestId: 'technology' })}
+                className="square-stamp-mint group inline-flex items-center gap-2 px-4 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0"
+              >
+                <span>Explore All</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686] transition-transform duration-150 group-hover:translate-x-0.5" />
+              </button>
+            </RevealBlock>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#BFE2BD] dark:bg-[#314735] border border-[#BFE2BD] dark:border-[#314735]">
             {INTERESTS.map((item, idx) => (
@@ -139,7 +157,7 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
                 as="button"
                 key={item.id}
                 initial={{ opacity: 0, y: 12, scale: 0.99 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                whileInView={isIntroBlocking ? undefined : { opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ ...SPRING_FLUID, delay: idx * 0.04 }}
                 onClick={() => onNavigate('about', { interestId: item.id })}
@@ -170,8 +188,8 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
 
       {/* Featured Stories — Preserved Covers in Clean Rectangular Frames */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8">
-        <RevealBlock className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div className="space-y-2 max-w-[54ch]">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <RevealBlock direction="left" className="space-y-2 max-w-[54ch]">
             <div className="flex items-center gap-2">
               <DoodleOpenBook className="w-6 h-6" />
               <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
@@ -184,17 +202,19 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
             <p className="text-sm text-[#5B6E5D] dark:text-[#9FB5A1] leading-[1.7]">
               {STORIES_AUTHOR_NOTE}
             </p>
-          </div>
+          </RevealBlock>
 
-          <button
-            type="button"
-            onClick={() => onNavigate('stories')}
-            className="square-stamp-mint group inline-flex items-center gap-2 px-4 py-2 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#4F9D58] dark:hover:border-[#8CD892] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0 self-start sm:self-auto"
-          >
-            <span>Stories Page</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#3D8B47] dark:text-[#8CD892] transition-transform duration-150 group-hover:translate-x-0.5" />
-          </button>
-        </RevealBlock>
+          <RevealBlock direction="right" delay={0.05} className="self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => onNavigate('stories')}
+              className="square-stamp-mint group inline-flex items-center gap-2 px-4 py-2 rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#4F9D58] dark:hover:border-[#8CD892] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0"
+            >
+              <span>Stories Page</span>
+              <ArrowRight className="w-3.5 h-3.5 text-[#3D8B47] dark:text-[#8CD892] transition-transform duration-150 group-hover:translate-x-0.5" />
+            </button>
+          </RevealBlock>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {STORIES.map((story, idx) => (
@@ -202,10 +222,20 @@ export const HomePage: React.FC<HomePageProps> = ({ isDark, onNavigate }) => {
               as="article"
               key={story.id}
               hoverLift
-              initial={{ opacity: 0, y: 14, scale: 0.99 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{
+                opacity: 0,
+                x: idx % 2 === 0 ? -(slideDistance * 0.75) : slideDistance * 0.75,
+                scale: 0.98,
+              }}
+              whileInView={
+                isIntroBlocking ? undefined : { opacity: 1, x: 0, scale: 1 }
+              }
               viewport={{ once: true, amount: 0.12 }}
-              transition={{ ...SPRING_FLUID, delay: idx * 0.06 }}
+              transition={{
+                duration: 0.76,
+                delay: idx * 0.06,
+                ease: ZOOM_SETTLE_EASE,
+              }}
               className="group border border-[#C9E1C7] dark:border-[#314735] hover:border-[#389442] dark:hover:border-[#7DE386] hover:shadow-[4px_4px_0px_#C9E9C8] dark:hover:shadow-[4px_4px_0px_#2A482F] bg-[#FCFDF9]/95 dark:bg-[#1D2A20]/95 p-5 sm:p-6 flex flex-col sm:flex-row gap-5 items-stretch rounded-none transition-[border-color,box-shadow,background-color] duration-150"
             >
               {/* Untouched Original Cover Artwork in Clean Rectangular Frame */}

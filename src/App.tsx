@@ -4,7 +4,10 @@ import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { AmbientNatureCanvas } from './components/AmbientNatureCanvas';
 import { Footer } from './components/Footer';
 import { LoadingScreen } from './components/LoadingScreen';
-import { SPRING_SNAPPY } from './components/MotionPrimitives';
+import {
+  IntroRevealProvider,
+  SPRING_SNAPPY,
+} from './components/MotionPrimitives';
 import { Navbar } from './components/Navbar';
 import { AboutPage } from './pages/AboutPage';
 import { ArchivePage } from './pages/ArchivePage';
@@ -62,6 +65,7 @@ export default function App() {
   );
   const [showFloatingTop, setShowFloatingTop] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [introSettled, setIntroSettled] = useState(false);
 
   const [isDark, setIsDark] = useState<boolean>(() => {
     return document.documentElement.classList.contains('dark');
@@ -70,6 +74,14 @@ export default function App() {
   const handleIntroComplete = useCallback(() => {
     setShowIntro(false);
   }, []);
+
+  useEffect(() => {
+    if (showIntro || introSettled) return;
+    const timer = window.setTimeout(() => {
+      setIntroSettled(true);
+    }, 1150);
+    return () => window.clearTimeout(timer);
+  }, [showIntro, introSettled]);
 
   const applyPageTransition = useCallback((nextPage: PageId) => {
     const prevPage = currentPageRef.current;
@@ -139,29 +151,33 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="relative min-h-screen flex flex-col bg-[#F7F9F3] text-[#223024] dark:bg-[#162018] dark:text-[#EDF3EA] transition-colors duration-200">
-        <AmbientNatureCanvas isDark={isDark} />
+      <IntroRevealProvider
+        isIntroBlocking={showIntro}
+        introRevealDelay={introSettled ? 0 : 0.22}
+      >
+        <div className="relative min-h-screen flex flex-col overflow-x-clip bg-[#F7F9F3] text-[#223024] dark:bg-[#162018] dark:text-[#EDF3EA] transition-colors duration-200">
+          <AmbientNatureCanvas isDark={isDark} />
 
-        <Navbar
-          currentPage={currentPage}
-          onNavigate={(page) => navigateTo(page)}
-          isDark={isDark}
-          onToggleTheme={toggleTheme}
-        />
+          <Navbar
+            currentPage={currentPage}
+            onNavigate={(page) => navigateTo(page)}
+            isDark={isDark}
+            onToggleTheme={toggleTheme}
+          />
 
-        <motion.main
-          className="relative z-10 flex-1 overflow-x-hidden origin-top"
-          initial={{ opacity: 0, scale: 0.84 }}
-          animate={{
-            opacity: showIntro ? 0 : 1,
-            scale: showIntro ? 0.84 : 1,
-          }}
-          transition={
-            showIntro
-              ? { duration: 0 }
-              : { duration: 0.88, delay: 0.22, ease: [0.16, 1, 0.3, 1] }
-          }
-        >
+          <motion.main
+            className="relative z-10 flex-1 overflow-x-hidden origin-top"
+            initial={{ opacity: 0, scale: 0.84 }}
+            animate={{
+              opacity: showIntro ? 0 : 1,
+              scale: showIntro ? 0.84 : 1,
+            }}
+            transition={
+              showIntro
+                ? { duration: 0 }
+                : { duration: 0.88, delay: 0.22, ease: [0.16, 1, 0.3, 1] }
+            }
+          >
           <AnimatePresence mode="wait" initial={false} custom={direction}>
             <motion.div
               key={currentPage}
@@ -215,12 +231,13 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <AnimatePresence>
-          {showIntro && (
-            <LoadingScreen isDark={isDark} onComplete={handleIntroComplete} />
-          )}
-        </AnimatePresence>
-      </div>
+          <AnimatePresence>
+            {showIntro && (
+              <LoadingScreen isDark={isDark} onComplete={handleIntroComplete} />
+            )}
+          </AnimatePresence>
+        </div>
+      </IntroRevealProvider>
     </MotionConfig>
   );
 }

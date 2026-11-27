@@ -4,7 +4,8 @@ import { motion } from 'motion/react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import {
   RevealBlock,
-  SPRING_FLUID,
+  ZOOM_SETTLE_EASE,
+  useIntroReveal,
 } from '../components/MotionPrimitives';
 import { DoodleIsoCube } from '../components/SketchDoodles';
 import type { PageId } from '../types/site';
@@ -16,6 +17,7 @@ interface ProjectsPageProps {
 const PADLET_EMBED_URL = 'https://padlet.com/embed/s025qhyo939js96n5mrg';
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
+  const { isIntroBlocking, introRevealDelay, slideDistance } = useIntroReveal();
   const [loaded, setLoaded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const frameWrapperRef = useRef<HTMLDivElement>(null);
@@ -51,8 +53,8 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-5 pb-8 flex flex-col gap-4">
-      <RevealBlock immediate delay={0.02} y={10}>
+    <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-5 pb-8 flex flex-col gap-4 overflow-x-clip">
+      <RevealBlock immediate direction="left" delay={0.02}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="[&_nav]:mb-1.5">
@@ -109,9 +111,21 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
 
       <motion.div
         ref={frameWrapperRef}
-        initial={{ opacity: 0, y: 12, scale: 0.992 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ ...SPRING_FLUID, delay: 0.08 }}
+        initial={{ opacity: 0, x: slideDistance * 0.65, scale: 0.96 }}
+        animate={
+          isIntroBlocking
+            ? { opacity: 0, x: slideDistance * 0.65, scale: 0.96 }
+            : { opacity: 1, x: 0, scale: 1 }
+        }
+        transition={
+          isIntroBlocking
+            ? { duration: 0 }
+            : {
+                duration: 0.84,
+                delay: introRevealDelay + 0.08,
+                ease: ZOOM_SETTLE_EASE,
+              }
+        }
         className={
           isFullscreen && !document.fullscreenElement
             ? 'fixed inset-0 z-50 bg-[#F7F9F3] dark:bg-[#162018] p-3 flex flex-col gap-2'

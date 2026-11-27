@@ -6,7 +6,8 @@ import { ImageWithFallback } from '../components/ImageWithFallback';
 import {
   ReactiveSurface,
   RevealBlock,
-  SPRING_FLUID,
+  ZOOM_SETTLE_EASE,
+  useIntroReveal,
 } from '../components/MotionPrimitives';
 import { DoodleOpenBook, DoodleTinyFlower } from '../components/SketchDoodles';
 import { StoryReaderModal } from '../components/StoryReaderModal';
@@ -22,6 +23,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
   onNavigate,
   initialStoryId,
 }) => {
+  const { isIntroBlocking, introRevealDelay, slideDistance } = useIntroReveal();
   const [readingStory, setReadingStory] = useState<StoryItem | null>(null);
 
   useEffect(() => {
@@ -34,14 +36,14 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
   }, [initialStoryId]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20 overflow-x-clip">
       <Breadcrumbs
         items={[{ label: 'Home', page: 'home' }, { label: 'Stories' }]}
         onNavigate={onNavigate}
       />
 
       <header className="space-y-4 pb-10 border-b border-[#C9E1C7] dark:border-[#314735]">
-        <RevealBlock immediate delay={0.02} y={10}>
+        <RevealBlock immediate direction="left" delay={0.02}>
           <div className="space-y-2.5 max-w-2xl">
             <div className="flex items-center gap-2">
               <DoodleOpenBook className="w-6 h-6" />
@@ -63,7 +65,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
           </div>
         </RevealBlock>
 
-        <RevealBlock immediate delay={0.09} y={8}>
+        <RevealBlock immediate direction="left" delay={0.08}>
           <div className="inline-flex items-start gap-2.5 px-4 py-3 border border-[#BFE2BD] dark:border-[#314735] bg-[#E2F6DF]/90 dark:bg-[#1D2A20] text-xs sm:text-sm text-[#3F6343] dark:text-[#9FB5A1] rounded-none">
             <DoodleTinyFlower className="w-5 h-5 shrink-0" />
             <p>
@@ -83,10 +85,29 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
             as="article"
             key={story.id}
             hoverLift
-            initial={{ opacity: 0, y: 14, scale: 0.99 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.12 }}
-            transition={{ ...SPRING_FLUID, delay: idx * 0.07 }}
+            initial={{
+              opacity: 0,
+              x: idx % 2 === 0 ? -slideDistance : slideDistance,
+              scale: 0.96,
+            }}
+            animate={
+              isIntroBlocking
+                ? {
+                    opacity: 0,
+                    x: idx % 2 === 0 ? -slideDistance : slideDistance,
+                    scale: 0.96,
+                  }
+                : { opacity: 1, x: 0, scale: 1 }
+            }
+            transition={
+              isIntroBlocking
+                ? { duration: 0 }
+                : {
+                    duration: 0.82,
+                    delay: introRevealDelay + 0.08 + idx * 0.06,
+                    ease: ZOOM_SETTLE_EASE,
+                  }
+            }
             className="group border border-[#C9E1C7] dark:border-[#314735] hover:border-[#389442] dark:hover:border-[#7DE386] hover:shadow-[4px_4px_0px_#C9E9C8] dark:hover:shadow-[4px_4px_0px_#2A482F] bg-[#FCFDF9] dark:bg-[#1D2A20] p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-stretch rounded-none transition-[border-color,box-shadow,background-color] duration-150"
           >
             <div

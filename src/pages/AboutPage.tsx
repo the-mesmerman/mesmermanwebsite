@@ -16,6 +16,8 @@ import {
   RevealBlock,
   SPRING_FLUID,
   SPRING_SNAPPY,
+  ZOOM_SETTLE_EASE,
+  useIntroReveal,
 } from '../components/MotionPrimitives';
 import {
   DoodleIsoCube,
@@ -116,6 +118,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   onNavigate,
   initialInterestId,
 }) => {
+  const { isIntroBlocking, introRevealDelay, slideDistance } = useIntroReveal();
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'showcase' | 'grid'>('showcase');
 
@@ -153,7 +156,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 pb-20 overflow-x-clip">
       <Breadcrumbs
         items={[{ label: 'Home', page: 'home' }, { label: 'About' }]}
         onNavigate={onNavigate}
@@ -162,7 +165,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
       {/* Minimalist Two-Column Opening with Preserved Portrait */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center pb-14 border-b border-[#C9E1C7] dark:border-[#314735]">
         <div className="lg:col-span-7 space-y-5">
-          <RevealBlock immediate delay={0.02} y={10}>
+          <RevealBlock immediate direction="left" delay={0.02}>
             <div className="flex items-center gap-2">
               <DoodlePencil className="w-6 h-6" />
               <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
@@ -171,7 +174,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             </div>
           </RevealBlock>
 
-          <RevealBlock immediate delay={0.07} y={12}>
+          <RevealBlock immediate direction="left" delay={0.08}>
             <div className="space-y-4">
               <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
                 A bit more{' '}
@@ -188,7 +191,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             </div>
           </RevealBlock>
 
-          <RevealBlock immediate delay={0.13} y={10}>
+          <RevealBlock immediate direction="left" delay={0.14}>
             <div className="pt-1 flex flex-wrap gap-3">
               <button
                 type="button"
@@ -211,9 +214,21 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 12, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ ...SPRING_FLUID, delay: 0.1 }}
+          initial={{ opacity: 0, x: slideDistance, scale: 0.95 }}
+          animate={
+            isIntroBlocking
+              ? { opacity: 0, x: slideDistance, scale: 0.95 }
+              : { opacity: 1, x: 0, scale: 1 }
+          }
+          transition={
+            isIntroBlocking
+              ? { duration: 0 }
+              : {
+                  duration: 0.84,
+                  delay: introRevealDelay + 0.08,
+                  ease: ZOOM_SETTLE_EASE,
+                }
+          }
           className="lg:col-span-5"
         >
           <ReactiveSurface
