@@ -130,180 +130,246 @@ export const STORIES: StoryItem[] = [
 
 export const ARCHIVE_MILESTONES: ArchiveMilestone[] = [
   {
+    id: 'v3-2',
+    version: 'V3.2',
+    date: '27 November 2026',
+    title: 'Loading Screen, Motion Refinement & Minimalist Polish',
+    summary:
+      'Introduced a randomized sketchbook loading screen with a zoom-in transition, refined site-wide motion physics, and simplified page layouts.',
+    highlights: [
+      'Added a full-screen loading screen featuring a geometric wheel, slow center drift, and 49 randomized non-overlapping doodles.',
+      'Implemented directional spring page transitions and an expanding straight underline indicator in the navigation bar.',
+      'Removed scrollbars from the Projects Padlet embed, cleared redundant footer links, and standardized minimalist hover states.',
+    ],
+  },
+  {
     id: 'v3-1',
     version: 'V3.1',
     date: '23 November 2026',
     title: 'Pastel Sketchbook Aesthetic, Projects & Bug Fixes',
     summary:
-      'Updated the site aesthetic to a minimalist pastel green sketchbook style with square geometry and a moving botanical background, added the new Projects tab, and applied small bug fixes.',
+      'Updated the site to a minimalist pastel green sketchbook style with square geometry, a moving botanical background, and a dedicated Projects page.',
     highlights: [
-      'Switched to vibrant pastel green accents, crisp square borders, and 3D sketchbook doodles.',
-      'Added the Projects tab with a near-full-page Padlet board embed.',
-      'Added the moving botanical canvas, updated About heading, Bunzo cover framing, rounded logo/favicon, and bug fixes.',
+      'Switched to pastel green accents, crisp square borders, and sketchbook SVG doodles.',
+      'Added the Projects tab with a full-height Padlet board embed.',
+      'Introduced the ambient botanical canvas alongside layout refinements and bug fixes.',
     ],
   },
   {
     id: 'v3-0',
     version: 'V3.0',
     date: '22 November 2026',
-    title: 'Custom Website Rebuild (Replaced Google Sites)',
+    title: 'Custom Website Rebuild',
     summary:
-      'Rebuilt the website from scratch as a custom web app replacing Google Sites, featuring a green nature theme, 3D visuals, interactive demos, and an in-site story reader.',
+      'Rebuilt the website from the ground up as a custom web application replacing Google Sites, featuring interactive demos and an embedded story reader.',
     highlights: [
       'Replaced Google Sites with a custom-coded portfolio.',
-      'Added interactive Rubik’s Cube, Math, Tech, and Nature visuals with light/dark mode.',
-      'Added an embedded PDF story reader for Bunzo the Rabbit and Ekavir.',
+      'Added interactive 3D Rubik’s Cube, Math, Tech, and Nature visuals with light and dark modes.',
+      'Integrated an embedded PDF reader for archived stories.',
     ],
   },
   {
     id: 'v2-6',
     version: 'V2.6',
-    date: '2nd April 2025',
-    title: '',
+    date: '2 April 2025',
+    title: 'Homepage Header Redesign',
     summary:
-      'Major change on the homepage, new AI Image for the header from Microsoft Designer AI.',
-    highlights: [],
+      'Refreshed the homepage visual layout with a new header illustration.',
+    highlights: [
+      'Updated the homepage layout structure.',
+      'Replaced the header artwork with a new AI-generated illustration.',
+    ],
   },
   {
     id: 'v2-5',
     version: 'V2.5',
-    date: '23rd June 2024',
-    title: '',
+    date: '23 June 2024',
+    title: 'School Projects & Interface Updates',
     summary:
-      'Added School Projects, redesigned More Options page, Minor GUI Updates.',
-    highlights: [],
+      'Expanded the portfolio with a dedicated School Projects section and refined secondary navigation.',
+    highlights: [
+      'Added the School Projects showcase page.',
+      'Redesigned the More Options menu and applied minor interface updates.',
+    ],
   },
   {
     id: 'v2-4',
     version: 'V2.4',
-    date: '20th May 2024',
-    title: '',
-    summary: 'Added a website trailer.',
-    highlights: [],
+    date: '20 May 2024',
+    title: 'Website Trailer Release',
+    summary:
+      'Published an introductory trailer showcasing the site and its sections.',
+    highlights: [
+      'Added a website trailer video to the site.',
+    ],
   },
   {
     id: 'v2-3',
     version: 'V2.3',
-    date: '10th May 2024',
-    title: '',
+    date: '10 May 2024',
+    title: 'Old Pages Archive & About Me Redesign',
     summary:
-      'Added the "Old Pages Archive" in "More Options" with old versions of website pages. "About Me" now has a new page. The old page is available in the Archive. Removed "Upcoming Updates" from the Website Records. Updated the footer.',
-    highlights: [],
+      'Created an archive for earlier page layouts, redesigned the About Me page, and streamlined site records.',
+    highlights: [
+      'Added an Old Pages Archive inside More Options preserving earlier page designs.',
+      'Launched a redesigned About Me page and updated the site footer.',
+      'Removed the Upcoming Updates section from Website Records.',
+    ],
   },
   {
     id: 'v2-2',
     version: 'V2.2',
-    date: '24th April 2024',
-    title: '',
+    date: '24 April 2024',
+    title: 'Navigation Expansion & Homepage Banner',
     summary:
-      "Added 'More Options' and made the home page banner into a large banner from a cover banner, minor changes. Changed the layout of the title on the Home page.",
-    highlights: [],
+      'Reorganized secondary navigation under More Options and enlarged the homepage hero banner.',
+    highlights: [
+      'Introduced the More Options navigation section.',
+      'Expanded the homepage banner scale and adjusted the title layout.',
+    ],
   },
   {
     id: 'v2-1',
     version: 'V2.1',
-    date: '5th April 2024',
-    title: '',
+    date: '5 April 2024',
+    title: 'Brand Identity & Record Cleanup',
     summary:
-      "Redecorated a few elements of the website and updated a few mistakes and old elements of the website by changing them to my new logo and branding. Also removed 'Announcements History' from website records because it was unnecessary.",
-    highlights: [],
+      'Standardized site branding with an updated logo and removed obsolete archive logs.',
+    highlights: [
+      'Updated site elements with the new logo and unified branding.',
+      'Corrected layout inconsistencies and removed the Announcements History log.',
+    ],
   },
   {
     id: 'v2-0',
     version: 'V2.0',
-    date: '1st January 2024',
-    title: '',
+    date: '1 January 2024',
+    title: 'Book Reviews Blog Launch',
     summary:
-      'Added the new book reviews blog onto the homepage - New Year Update.',
-    highlights: [],
+      'Opened the new year with a dedicated book reviews section integrated into the homepage.',
+    highlights: [
+      'Added the Book Reviews blog onto the homepage.',
+    ],
   },
   {
     id: 'v1-9',
     version: 'V1.9',
-    date: '30th November 2023',
-    title: '',
+    date: '30 November 2023',
+    title: 'Google Sites Theme & Reading Adjustment',
     summary:
-      'Updated the custom theme used in Google Sites. Turned on the Reading adjustment of Google Sites on the home page. A few minor changes. Getting ready for the new year update.',
-    highlights: [],
+      'Refined the custom Google Sites theme and improved homepage readability.',
+    highlights: [
+      'Updated the custom Google Sites theme styling.',
+      'Enabled Google Sites reading adjustments on the homepage.',
+    ],
   },
   {
     id: 'v1-8',
     version: 'V1.8',
-    date: '30th November 2023',
-    title: '',
+    date: '30 November 2023',
+    title: 'Community Page & Updates Book Restructure',
     summary:
-      "Added a few gradients and updated a few designs. Moved the 'Updates Book' option to the end of the 'Advanced Options' section. Added gradients to 'Community' section. Turned the main Updates Book content into a Collapsible Group. Added 'Upcoming Updates' and 'GUI Changes Record' section to Updates Book. Added bullets to the 'Updates History' section: the bullets represent past updates. Replaced the 'Confirm Feedback' page with the 'Community' page which basically tells you a bit about the community, and has a link to the actual Padlet page. Changed the Banner Image.",
-    highlights: [],
+      'Overhauled the Updates Book layout, introduced gradient styling, and launched a dedicated Community page.',
+    highlights: [
+      'Replaced the feedback confirmation screen with a Community page linking to Padlet.',
+      'Restructured the Updates Book into collapsible sections with GUI change logs and bulleted history.',
+      'Applied gradient styling across sections and updated the main banner image.',
+    ],
   },
   {
     id: 'v1-7',
     version: 'V1.7',
-    date: '29th November 2023',
-    title: '',
+    date: '29 November 2023',
+    title: 'Padlet Feedback & Social Links',
     summary:
-      "Centered the social media links on my homepage. Added a new complaints and suggestions system powered by Padlet. Removed the old system powered by google forms(I felt that it's easier to just directly chat). Changed the 'current version' part of the footer.",
-    highlights: [],
+      'Transitioned feedback collection to Padlet and adjusted homepage social links and footer versioning.',
+    highlights: [
+      'Centered social media links on the homepage.',
+      'Replaced the Google Forms feedback system with a Padlet-powered board.',
+      'Updated the current version display in the footer.',
+    ],
   },
   {
     id: 'v1-6',
     version: 'V1.6',
-    date: '22nd October 2023',
-    title: '',
+    date: '22 October 2023',
+    title: 'Stories Library Expansion',
     summary:
-      "Updated 'My Stories' with a new publication in progress and published one of my works.",
-    highlights: [],
+      'Updated the My Stories section with newly published and in-progress written works.',
+    highlights: [
+      'Published a completed story in My Stories.',
+      'Added status tracking for an upcoming work in progress.',
+    ],
   },
   {
     id: 'v1-5',
     version: 'V1.5',
     date: '20 July 2023',
-    title: '',
+    title: 'PENUP Profile Link & Cleanup',
     summary:
-      "Added a link to my PENUP profile, removed the 'What is Scratch?' button.",
-    highlights: [],
+      'Connected the PENUP artwork profile and simplified older introductory links.',
+    highlights: [
+      'Added an external link to the PENUP artwork profile.',
+      'Removed the introductory Scratch button.',
+    ],
   },
   {
     id: 'v1-4',
     version: 'V1.4',
-    date: '10th July 2023',
-    title: '',
+    date: '10 July 2023',
+    title: 'Typography Update & Stories Cleanup',
     summary:
-      "Updated the fonts for website, removed drafts section from 'My Stories' + some more tweaks.",
-    highlights: [],
+      'Updated site typography and streamlined the My Stories page layout.',
+    highlights: [
+      'Updated typography across the website.',
+      'Removed the drafts section from My Stories and applied minor layout refinements.',
+    ],
   },
   {
     id: 'v1-3',
     version: 'V1.3',
     date: '30 May 2023',
-    title: '',
+    title: 'Embedded Feedback & First Story Publication',
     summary:
-      "Switched the feedback form from a separate site into a page embed + added confirmation & 'READ ME' before visiting feedback form page + some more tweaks. Published my first completed story from 2022! 😃",
-    highlights: [],
+      'Integrated the feedback form directly into the site and published the first completed story.',
+    highlights: [
+      'Embedded the feedback form directly on-page with a pre-submission notice.',
+      'Published the first completed story originally written in 2022.',
+    ],
   },
   {
     id: 'v1-2',
     version: 'V1.2',
     date: '29 May 2023',
-    title: '',
+    title: 'About Me, Stories & Feedback Form',
     summary:
-      "Turned 'Who am I?' into 'About Me' and added 'My Stories'. + added a feedback form.",
-    highlights: [],
+      'Renamed the introductory bio page to About Me and launched the My Stories and Feedback sections.',
+    highlights: [
+      'Renamed "Who am I?" to About Me.',
+      'Added the My Stories page and initial feedback form.',
+    ],
   },
   {
     id: 'v1-1',
     version: 'V1.1',
     date: '28 May 2023',
-    title: '',
+    title: 'Dedicated Bio Page & Updates Book',
     summary:
-      "Gave 'Who am I?' its own page, added the Updates Book + some tweaks.",
-    highlights: [],
+      'Separated the personal bio into its own page and introduced a site changelog.',
+    highlights: [
+      'Moved "Who am I?" to a standalone page.',
+      'Added the initial Updates Book changelog.',
+    ],
   },
   {
     id: 'v1-0',
     version: 'V1.0',
     date: '28 May 2023',
-    title: '',
-    summary: 'Home Page and basic functions.',
-    highlights: [],
+    title: 'Initial Site Launch',
+    summary:
+      'Launched the first version of the personal website on Google Sites.',
+    highlights: [
+      'Published the initial homepage and core navigation.',
+    ],
   },
 ];

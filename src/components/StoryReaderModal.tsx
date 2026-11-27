@@ -12,6 +12,7 @@ import {
 import { motion } from 'motion/react';
 import type { StoryItem } from '../types/site';
 import { ImageWithFallback } from './ImageWithFallback';
+import { SPRING_FLUID } from './MotionPrimitives';
 
 interface StoryReaderModalProps {
   story: StoryItem;
@@ -90,10 +91,10 @@ export const StoryReaderModal: React.FC<StoryReaderModalProps> = ({
       role="dialog"
       aria-modal="true"
       aria-label={`Reading ${story.title}`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.18 }}
+      initial={{ opacity: 0, scale: 0.985, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.99, y: 8 }}
+      transition={SPRING_FLUID}
       className="fixed inset-0 z-[60] bg-[#F7F9F3] dark:bg-[#162018] flex flex-col"
     >
       {/* Square Reader Header */}

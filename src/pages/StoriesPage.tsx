@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BookOpen, ExternalLink } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ImageWithFallback } from '../components/ImageWithFallback';
+import {
+  ReactiveSurface,
+  RevealBlock,
+  SPRING_FLUID,
+} from '../components/MotionPrimitives';
 import { DoodleOpenBook, DoodleTinyFlower } from '../components/SketchDoodles';
 import { StoryReaderModal } from '../components/StoryReaderModal';
 import { STORIES, STORIES_AUTHOR_NOTE } from '../data/siteData';
@@ -12,8 +17,6 @@ interface StoriesPageProps {
   onNavigate: (page: PageId) => void;
   initialStoryId?: string;
 }
-
-const CALM_EASE = [0.22, 1, 0.36, 1] as const;
 
 export const StoriesPage: React.FC<StoriesPageProps> = ({
   onNavigate,
@@ -38,47 +41,53 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
       />
 
       <header className="space-y-4 pb-10 border-b border-[#C9E1C7] dark:border-[#314735]">
-        <div className="space-y-2.5 max-w-2xl">
-          <div className="flex items-center gap-2">
-            <DoodleOpenBook className="w-6 h-6" />
-            <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
-              Stories Library
-            </span>
+        <RevealBlock immediate delay={0.02} y={10}>
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <DoodleOpenBook className="w-6 h-6" />
+              <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
+                Stories Library
+              </span>
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
+              My{' '}
+              <span className="italic text-[#2C913A] dark:text-[#7EE686]">
+                Stories
+              </span>
+            </h1>
+
+            <p className="text-base text-[#536956] dark:text-[#9FB5A1] leading-[1.7] max-w-[52ch]">
+              Two stories I wrote and published earlier.
+            </p>
           </div>
+        </RevealBlock>
 
-          <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
-            My{' '}
-            <span className="italic text-[#2C913A] dark:text-[#7EE686]">
-              Stories
-            </span>
-          </h1>
-
-          <p className="text-base text-[#536956] dark:text-[#9FB5A1] leading-[1.7] max-w-[52ch]">
-            Two stories I wrote and published earlier.
-          </p>
-        </div>
-
-        <div className="inline-flex items-start gap-2.5 px-4 py-3 border border-[#BFE2BD] dark:border-[#314735] bg-[#E2F6DF]/90 dark:bg-[#1D2A20] text-xs sm:text-sm text-[#3F6343] dark:text-[#9FB5A1] rounded-none">
-          <DoodleTinyFlower className="w-5 h-5 shrink-0" />
-          <p>
-            <strong className="font-medium text-[#223024] dark:text-[#EDF3EA]">
-              Note:
-            </strong>{' '}
-            {STORIES_AUTHOR_NOTE}
-          </p>
-        </div>
+        <RevealBlock immediate delay={0.09} y={8}>
+          <div className="inline-flex items-start gap-2.5 px-4 py-3 border border-[#BFE2BD] dark:border-[#314735] bg-[#E2F6DF]/90 dark:bg-[#1D2A20] text-xs sm:text-sm text-[#3F6343] dark:text-[#9FB5A1] rounded-none">
+            <DoodleTinyFlower className="w-5 h-5 shrink-0" />
+            <p>
+              <strong className="font-medium text-[#223024] dark:text-[#EDF3EA]">
+                Note:
+              </strong>{' '}
+              {STORIES_AUTHOR_NOTE}
+            </p>
+          </div>
+        </RevealBlock>
       </header>
 
       {/* Square-Framed Editorial Story Spreads (Untouched Original Covers) */}
       <section className="pt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
         {STORIES.map((story, idx) => (
-          <motion.article
+          <ReactiveSurface
+            as="article"
             key={story.id}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            hoverLift
+            initial={{ opacity: 0, y: 14, scale: 0.99 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, amount: 0.12 }}
-            transition={{ duration: 0.3, delay: idx * 0.06, ease: CALM_EASE }}
-            className="border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-stretch rounded-none"
+            transition={{ ...SPRING_FLUID, delay: idx * 0.07 }}
+            className="group border border-[#C9E1C7] dark:border-[#314735] hover:border-[#389442] dark:hover:border-[#7DE386] hover:shadow-[4px_4px_0px_#C9E9C8] dark:hover:shadow-[4px_4px_0px_#2A482F] bg-[#FCFDF9] dark:bg-[#1D2A20] p-6 flex flex-col sm:flex-row gap-6 items-center sm:items-stretch rounded-none transition-[border-color,box-shadow,background-color] duration-150"
           >
             <div
               onClick={() => setReadingStory(story)}
@@ -93,14 +102,16 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
               aria-label={`Read ${story.title}`}
               className="w-44 shrink-0 aspect-[3/4] border border-[#C9E1C7] dark:border-[#314735] bg-[#F7F9F3] dark:bg-[#162018] overflow-hidden cursor-pointer rounded-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#4F9D58]"
             >
-              <ImageWithFallback
-                src={story.coverImage}
-                alt={`Book cover for ${story.title}`}
-                fallbackTitle={story.title}
-                className={`w-full h-full object-cover ${
-                  story.id === 'bunzo-the-rabbit' ? 'scale-[1.08]' : ''
-                }`}
-              />
+              <div className="w-full h-full transition-transform duration-300 ease-out group-hover:scale-[1.03]">
+                <ImageWithFallback
+                  src={story.coverImage}
+                  alt={`Book cover for ${story.title}`}
+                  fallbackTitle={story.title}
+                  className={`w-full h-full object-cover ${
+                    story.id === 'bunzo-the-rabbit' ? 'scale-[1.08]' : ''
+                  }`}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col justify-between gap-5 flex-1 text-center sm:text-left">
@@ -139,7 +150,7 @@ export const StoriesPage: React.FC<StoriesPageProps> = ({
                 )}
               </div>
             </div>
-          </motion.article>
+          </ReactiveSurface>
         ))}
       </section>
 

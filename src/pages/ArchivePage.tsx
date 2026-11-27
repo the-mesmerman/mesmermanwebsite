@@ -2,6 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { ArrowDownUp, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import {
+  ReactiveSurface,
+  RevealBlock,
+  SPRING_FLUID,
+  SPRING_SNAPPY,
+} from '../components/MotionPrimitives';
 import { DoodlePencil } from '../components/SketchDoodles';
 import { ARCHIVE_MILESTONES } from '../data/siteData';
 import type { PageId } from '../types/site';
@@ -12,10 +18,8 @@ interface ArchivePageProps {
 
 type EraFilter = 'all' | 'v3' | 'v2' | 'v1';
 
-const CALM_EASE = [0.22, 1, 0.36, 1] as const;
-
 const ERA_TABS: { id: EraFilter; label: string }[] = [
-  { id: 'all', label: 'All (19)' },
+  { id: 'all', label: `All (${ARCHIVE_MILESTONES.length})` },
   { id: 'v3', label: 'V3.x Custom' },
   { id: 'v2', label: 'V2.x Sites' },
   { id: 'v1', label: 'V1.x Early' },
@@ -43,89 +47,102 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
       />
 
       <header className="space-y-4 pb-8 border-b border-[#BFE2BD] dark:border-[#314735]">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2">
-              <DoodlePencil className="w-6 h-6" />
-              <span className="font-mono text-xs text-[#536956] dark:text-[#9FB5A1]">
-                Version Records · May 2023 – Present
-              </span>
+        <RevealBlock immediate delay={0.02} y={10}>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2">
+                <DoodlePencil className="w-6 h-6" />
+                <span className="font-mono text-xs text-[#536956] dark:text-[#9FB5A1]">
+                  Version Records · May 2023 – Present
+                </span>
+              </div>
+              <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
+                Site{' '}
+                <span className="italic text-[#2C913A] dark:text-[#7EE686]">
+                  Archive
+                </span>
+              </h1>
+              <p className="text-base text-[#536956] dark:text-[#9FB5A1] max-w-xl leading-[1.7]">
+                Every version from the early Google Sites builds in 2023 to the
+                current custom site.
+              </p>
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
-              Site{' '}
-              <span className="italic text-[#2C913A] dark:text-[#7EE686]">
-                Archive
-              </span>
-            </h1>
-            <p className="text-base text-[#536956] dark:text-[#9FB5A1] max-w-xl leading-[1.7]">
-              Every version from the early Google Sites builds in 2023 to the
-              current custom site.
-            </p>
-          </div>
 
-          <div className="font-mono text-xs text-[#2C913A] dark:text-[#7EE686] tabular-nums shrink-0">
-            Current: V3.1
+            <div className="font-mono text-xs text-[#2C913A] dark:text-[#7EE686] tabular-nums shrink-0">
+              Current: V3.2
+            </div>
           </div>
-        </div>
+        </RevealBlock>
 
         {/* Efficient Era Filter & Sort Bar */}
-        <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
-          <div
-            className="inline-flex flex-wrap items-center gap-1 p-1 rounded-none bg-[#FCFDF9] dark:bg-[#1D2A20] border border-[#BFE2BD] dark:border-[#314735]"
-            role="tablist"
-            aria-label="Filter archive versions by era"
-          >
-            {ERA_TABS.map((tab) => {
-              const active = era === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => setEra(tab.id)}
-                  className={`px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
-                    active
-                      ? 'bg-[#7DE386] text-[#132B16]'
-                      : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+        <RevealBlock immediate delay={0.08} y={8}>
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+            <div
+              className="inline-flex flex-wrap items-center gap-1 p-1 rounded-none bg-[#FCFDF9] dark:bg-[#1D2A20] border border-[#BFE2BD] dark:border-[#314735]"
+              role="tablist"
+              aria-label="Filter archive versions by era"
+            >
+              {ERA_TABS.map((tab) => {
+                const active = era === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => setEra(tab.id)}
+                    className={`relative px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                      active
+                        ? 'text-[#132B16]'
+                        : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="archive-era-highlight"
+                        transition={SPRING_SNAPPY}
+                        className="absolute inset-0 bg-[#7DE386] rounded-none"
+                      />
+                    )}
+                    <span className="relative z-10">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-          <button
-            type="button"
-            onClick={() => setNewestFirst((prev) => !prev)}
-            className="square-stamp-mint inline-flex items-center gap-1.5 px-3 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] whitespace-nowrap shrink-0"
-          >
-            <ArrowDownUp className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686]" />
-            <span>{newestFirst ? 'Newest First' : 'Oldest First'}</span>
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => setNewestFirst((prev) => !prev)}
+              className="square-stamp-mint inline-flex items-center gap-1.5 px-3 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] whitespace-nowrap shrink-0"
+            >
+              <ArrowDownUp className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686]" />
+              <span>{newestFirst ? 'Newest First' : 'Oldest First'}</span>
+            </button>
+          </div>
+        </RevealBlock>
       </header>
 
       {/* Compact Square Editorial Changelog Ledger */}
       <section className="pt-8">
         <div className="border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9]/95 dark:bg-[#1D2A20]/95 divide-y divide-[#BFE2BD] dark:divide-[#314735] rounded-none">
           {visibleMilestones.map((milestone, idx) => {
-            const isCurrent = milestone.version === 'V3.1';
+            const isCurrent = milestone.version === 'V3.2';
             const isV3 = milestone.version.startsWith('V3');
             return (
-              <motion.article
+              <ReactiveSurface
+                as="article"
                 key={milestone.id}
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
                 transition={{
-                  duration: 0.22,
-                  delay: Math.min(idx * 0.02, 0.16),
-                  ease: CALM_EASE,
+                  ...SPRING_FLUID,
+                  delay: Math.min(idx * 0.025, 0.16),
                 }}
-                className={`p-4 sm:p-5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-start ${
-                  isCurrent ? 'bg-[#E2F6DF]/55 dark:bg-[#253D29]/55' : ''
+                className={`p-4 sm:p-5 grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-6 items-start transition-colors duration-150 ${
+                  isCurrent
+                    ? 'bg-[#E2F6DF]/55 dark:bg-[#253D29]/55 hover:bg-[#DAF4D7]/80 dark:hover:bg-[#2A472F]/75'
+                    : 'hover:bg-[#EFF8EE]/75 dark:hover:bg-[#223426]/70'
                 }`}
               >
                 {/* Left Column: Version Stamp + Date */}
@@ -186,7 +203,7 @@ export const ArchivePage: React.FC<ArchivePageProps> = ({ onNavigate }) => {
                     </ul>
                   )}
                 </div>
-              </motion.article>
+              </ReactiveSurface>
             );
           })}
         </div>

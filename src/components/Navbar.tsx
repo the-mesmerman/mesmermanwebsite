@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Menu, Moon, Sun, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { NAV_ITEMS } from '../data/siteData';
@@ -12,6 +12,13 @@ interface NavbarProps {
   onToggleTheme: () => void;
 }
 
+interface IndicatorRect {
+  left: number;
+  right: number;
+  top: number;
+  direction: 'left' | 'right' | 'none';
+}
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   onNavigate,
@@ -19,6 +26,63 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const labelRefs = useRef<Partial<Record<PageId, HTMLSpanElement | null>>>({});
+  const prevLeftRef = useRef<number | null>(null);
+  const [indicator, setIndicator] = useState<IndicatorRect | null>(null);
+
+  const measureIndicator = useCallback(
+    (animateChange: boolean) => {
+      const navEl = navRef.current;
+      const labelEl = labelRefs.current[currentPage];
+      if (!navEl || !labelEl || navEl.offsetWidth === 0) return;
+
+      const navRect = navEl.getBoundingClientRect();
+      const labelRect = labelEl.getBoundingClientRect();
+      const nextLeft = labelRect.left - navRect.left;
+      const nextRight = navRect.right - labelRect.right;
+      const nextTop = labelRect.bottom - navRect.top + 3;
+
+      let direction: IndicatorRect['direction'] = 'none';
+      if (animateChange && prevLeftRef.current !== null) {
+        if (nextLeft > prevLeftRef.current + 0.5) {
+          direction = 'right';
+        } else if (nextLeft < prevLeftRef.current - 0.5) {
+          direction = 'left';
+        }
+      }
+
+      prevLeftRef.current = nextLeft;
+      setIndicator({
+        left: nextLeft,
+        right: nextRight,
+        top: nextTop,
+        direction,
+      });
+    },
+    [currentPage]
+  );
+
+  useLayoutEffect(() => {
+    measureIndicator(true);
+  }, [measureIndicator]);
+
+  useEffect(() => {
+    let active = true;
+    const handleResize = () => measureIndicator(false);
+    window.addEventListener('resize', handleResize);
+
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(() => {
+        if (active) measureIndicator(false);
+      });
+    }
+
+    return () => {
+      active = false;
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [measureIndicator]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -58,8 +122,9 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Simple Rectangular Text Navigation */}
           <nav
+            ref={navRef}
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-2 text-sm"
+            className="hidden md:flex relative items-center gap-2 text-sm"
           >
             {NAV_ITEMS.map((item) => {
               const active = currentPage === item.id;
@@ -74,30 +139,45 @@ export const Navbar: React.FC<NavbarProps> = ({
                       : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                   }`}
                 >
-                  {item.label}
-                  {active && (
-                    <motion.svg
-                      layoutId="nav-ink-underline"
-                      viewBox="0 0 60 6"
-                      fill="none"
-                      preserveAspectRatio="none"
-                      aria-hidden="true"
-                      className="absolute inset-x-2 -bottom-0.5 h-[5px] text-[#45BD52] dark:text-[#7EE686]"
-                    >
-                      <motion.path
-                        d="M1 4 C18 1.5, 42 5, 59 2.5"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                      />
-                    </motion.svg>
-                  )}
+                  <span
+                    ref={(el) => {
+                      labelRefs.current[item.id] = el;
+                    }}
+                    className="inline-block"
+                  >
+                    {item.label}
+                  </span>
                 </button>
               );
             })}
+
+            {indicator && (
+              <motion.span
+                aria-hidden="true"
+                initial={false}
+                animate={{
+                  left: indicator.left,
+                  right: indicator.right,
+                  top: indicator.top,
+                }}
+                transition={{
+                  left:
+                    indicator.direction === 'none'
+                      ? { duration: 0 }
+                      : indicator.direction === 'left'
+                        ? { duration: 0.22, delay: 0, ease: [0.16, 1, 0.3, 1] }
+                        : { duration: 0.24, delay: 0.085, ease: [0.22, 1, 0.36, 1] },
+                  right:
+                    indicator.direction === 'none'
+                      ? { duration: 0 }
+                      : indicator.direction === 'right'
+                        ? { duration: 0.22, delay: 0, ease: [0.16, 1, 0.3, 1] }
+                        : { duration: 0.24, delay: 0.085, ease: [0.22, 1, 0.36, 1] },
+                  top: { duration: 0 },
+                }}
+                className="pointer-events-none absolute h-[2px] rounded-none bg-[#2C913A] dark:bg-[#7EE686]"
+              />
+            )}
           </nav>
 
           {/* Square Theme Toggle + Mobile Menu */}

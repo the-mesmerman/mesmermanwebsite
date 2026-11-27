@@ -12,6 +12,12 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ImageWithFallback } from '../components/ImageWithFallback';
 import { MonogramLogo } from '../components/MonogramLogo';
 import {
+  ReactiveSurface,
+  RevealBlock,
+  SPRING_FLUID,
+  SPRING_SNAPPY,
+} from '../components/MotionPrimitives';
+import {
   DoodleIsoCube,
   DoodleLeafSprig,
   DoodleOpenBook,
@@ -30,8 +36,6 @@ interface AboutPageProps {
   onNavigate: (page: PageId) => void;
   initialInterestId?: string;
 }
-
-const CALM_EASE = [0.22, 1, 0.36, 1] as const;
 
 const FACETS = [
   {
@@ -157,59 +161,65 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
       {/* Minimalist Two-Column Opening with Preserved Portrait */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center pb-14 border-b border-[#C9E1C7] dark:border-[#314735]">
+        <div className="lg:col-span-7 space-y-5">
+          <RevealBlock immediate delay={0.02} y={10}>
+            <div className="flex items-center gap-2">
+              <DoodlePencil className="w-6 h-6" />
+              <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
+                About Me
+              </span>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock immediate delay={0.07} y={12}>
+            <div className="space-y-4">
+              <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
+                A bit more{' '}
+                <span className="italic text-[#2C913A] dark:text-[#7EE686]">
+                  about me.
+                </span>
+              </h1>
+
+              <p className="text-base text-[#536956] dark:text-[#9FB5A1] leading-[1.7] max-w-[54ch]">
+                I’m a student who likes math, coding, cubing, reading, and spending
+                time outside. Below is a closer look at my interests along with a few
+                interactive demos I keep here.
+              </p>
+            </div>
+          </RevealBlock>
+
+          <RevealBlock immediate delay={0.13} y={10}>
+            <div className="pt-1 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={scrollToInterests}
+                className="square-stamp-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[#132B16] text-sm font-medium min-h-[42px] whitespace-nowrap shrink-0"
+              >
+                <span>Interests &amp; Demos</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-1" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onNavigate('stories')}
+                className="square-stamp-mint inline-flex items-center gap-2 px-4 py-2.5 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-[#223024] dark:text-[#EDF3EA] text-sm font-medium min-h-[42px] whitespace-nowrap shrink-0"
+              >
+                <span>My Stories</span>
+              </button>
+            </div>
+          </RevealBlock>
+        </div>
+
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.34, ease: CALM_EASE }}
-          className="lg:col-span-7 space-y-5"
-        >
-          <div className="flex items-center gap-2">
-            <DoodlePencil className="w-6 h-6" />
-            <span className="font-mono text-xs text-[#5B6E5D] dark:text-[#9FB5A1]">
-              About Me
-            </span>
-          </div>
-
-          <h1 className="font-display text-4xl sm:text-5xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
-            A bit more{' '}
-            <span className="italic text-[#2C913A] dark:text-[#7EE686]">
-              about me.
-            </span>
-          </h1>
-
-          <p className="text-base text-[#536956] dark:text-[#9FB5A1] leading-[1.7] max-w-[54ch]">
-            I’m a student who likes math, coding, cubing, reading, and spending
-            time outside. Below is a closer look at my interests along with a few
-            interactive demos I keep here.
-          </p>
-
-          <div className="pt-1 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={scrollToInterests}
-              className="square-stamp-btn group inline-flex items-center gap-2 px-4 py-2.5 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[#132B16] text-sm font-medium min-h-[42px] whitespace-nowrap shrink-0"
-            >
-              <span>Interests &amp; Demos</span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-1" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => onNavigate('stories')}
-              className="square-stamp-mint inline-flex items-center gap-2 px-4 py-2.5 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-[#223024] dark:text-[#EDF3EA] text-sm font-medium min-h-[42px] whitespace-nowrap shrink-0"
-            >
-              <span>My Stories</span>
-            </button>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.36, delay: 0.08, ease: CALM_EASE }}
+          initial={{ opacity: 0, y: 12, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ ...SPRING_FLUID, delay: 0.1 }}
           className="lg:col-span-5"
         >
-          <div className="border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] p-3 max-w-[290px] w-full mx-auto rounded-none">
+          <ReactiveSurface
+            hoverLift
+            className="border border-[#C9E1C7] dark:border-[#314735] hover:border-[#389442] dark:hover:border-[#7DE386] hover:shadow-[4px_4px_0px_#C9E9C8] dark:hover:shadow-[4px_4px_0px_#2A482F] bg-[#FCFDF9] dark:bg-[#1D2A20] p-3 max-w-[290px] w-full mx-auto rounded-none transition-[border-color,box-shadow,background-color] duration-150"
+          >
             <div className="relative aspect-square w-full overflow-hidden bg-[#F7F9F3] dark:bg-[#162018] border border-[#C9E1C7] dark:border-[#314735] rounded-none">
               <img
                 src={`${import.meta.env.BASE_URL}assets/aistudio/image_e3d72e20.png`}
@@ -232,7 +242,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               </div>
               <DoodleTinyFlower className="w-5 h-5" />
             </div>
-          </div>
+          </ReactiveSurface>
         </motion.div>
       </section>
 
@@ -270,24 +280,32 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
             if (isClickable && facet.targetInterest) {
               return (
-                <button
+                <ReactiveSurface
+                  as="button"
                   key={facet.id}
-                  type="button"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ ...SPRING_FLUID, delay: idx * 0.035 }}
                   onClick={() => jumpToInterest(facet.targetInterest!)}
-                  className="group text-left bg-[#FCFDF9] dark:bg-[#1D2A20] hover:bg-[#DAF4D7] dark:hover:bg-[#253D29] p-5 sm:p-6 flex flex-col justify-between gap-4 transition-colors duration-150 rounded-none"
+                  className="group text-left bg-[#FCFDF9] dark:bg-[#1D2A20] hover:bg-[#DAF4D7]/90 dark:hover:bg-[#253D29]/90 p-5 sm:p-6 flex flex-col justify-between gap-4 transition-colors duration-150 rounded-none"
                 >
                   {inner}
-                </button>
+                </ReactiveSurface>
               );
             }
 
             return (
-              <div
+              <ReactiveSurface
                 key={facet.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ ...SPRING_FLUID, delay: idx * 0.035 }}
                 className="bg-[#FCFDF9] dark:bg-[#1D2A20] p-5 sm:p-6 flex flex-col justify-between gap-4 rounded-none"
               >
                 {inner}
-              </div>
+              </ReactiveSurface>
             );
           })}
         </div>
@@ -295,7 +313,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
       {/* Interactive Interests & Preserved Photography */}
       <section id="interests-explorer" className="pt-14 space-y-8">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <RevealBlock className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="space-y-1.5">
             <h2 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
               Interests &amp; Demos
@@ -316,14 +334,23 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               <button
                 type="button"
                 onClick={() => setViewMode('showcase')}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                className={`relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                   viewMode === 'showcase'
-                    ? 'bg-[#7DE386] text-[#132B16]'
+                    ? 'text-[#132B16]'
                     : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                 }`}
               >
-                <Rows3 className="w-3.5 h-3.5" />
-                <span>Showcase</span>
+                {viewMode === 'showcase' && (
+                  <motion.span
+                    layoutId="about-view-highlight"
+                    transition={SPRING_SNAPPY}
+                    className="absolute inset-0 bg-[#7DE386] rounded-none"
+                  />
+                )}
+                <span className="relative z-10 inline-flex items-center gap-1.5">
+                  <Rows3 className="w-3.5 h-3.5" />
+                  <span>Showcase</span>
+                </span>
               </button>
               <button
                 type="button"
@@ -331,14 +358,23 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                   setViewMode('grid');
                   setSelectedFilter('all');
                 }}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                className={`relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                   viewMode === 'grid'
-                    ? 'bg-[#7DE386] text-[#132B16]'
+                    ? 'text-[#132B16]'
                     : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                 }`}
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Overview</span>
+                {viewMode === 'grid' && (
+                  <motion.span
+                    layoutId="about-view-highlight"
+                    transition={SPRING_SNAPPY}
+                    className="absolute inset-0 bg-[#7DE386] rounded-none"
+                  />
+                )}
+                <span className="relative z-10 inline-flex items-center gap-1.5">
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Overview</span>
+                </span>
               </button>
             </div>
 
@@ -354,13 +390,20 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                   role="tab"
                   aria-selected={selectedFilter === 'all'}
                   onClick={() => setSelectedFilter('all')}
-                  className={`px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                  className={`relative px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                     selectedFilter === 'all'
-                      ? 'bg-[#7DE386] text-[#132B16]'
+                      ? 'text-[#132B16]'
                       : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                   }`}
                 >
-                  All
+                  {selectedFilter === 'all' && (
+                    <motion.span
+                      layoutId="about-filter-highlight"
+                      transition={SPRING_SNAPPY}
+                      className="absolute inset-0 bg-[#7DE386] rounded-none"
+                    />
+                  )}
+                  <span className="relative z-10">All</span>
                 </button>
 
                 {INTERESTS.map((interest) => {
@@ -372,20 +415,27 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                       role="tab"
                       aria-selected={active}
                       onClick={() => setSelectedFilter(interest.id)}
-                      className={`px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+                      className={`relative px-3 py-1.5 rounded-none text-xs font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
                         active
-                          ? 'bg-[#7DE386] text-[#132B16]'
+                          ? 'text-[#132B16]'
                           : 'text-[#536956] dark:text-[#9FB5A1] hover:text-[#223024] dark:hover:text-[#EDF3EA]'
                       }`}
                     >
-                      {interest.title}
+                      {active && (
+                        <motion.span
+                          layoutId="about-filter-highlight"
+                          transition={SPRING_SNAPPY}
+                          className="absolute inset-0 bg-[#7DE386] rounded-none"
+                        />
+                      )}
+                      <span className="relative z-10">{interest.title}</span>
                     </button>
                   );
                 })}
               </div>
             )}
           </div>
-        </div>
+        </RevealBlock>
 
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#BFE2BD] dark:bg-[#314735] border border-[#BFE2BD] dark:border-[#314735]">
@@ -393,14 +443,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               const meta = INTEREST_META[interest.id] ?? INTEREST_META.technology;
               const num = `0${idx + 1}`;
               return (
-                <button
+                <ReactiveSurface
+                  as="button"
                   key={interest.id}
-                  type="button"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...SPRING_FLUID, delay: idx * 0.035 }}
                   onClick={() => {
                     setSelectedFilter(interest.id);
                     setViewMode('showcase');
                   }}
-                  className="group text-left bg-[#FCFDF9] dark:bg-[#1D2A20] hover:bg-[#DAF4D7] dark:hover:bg-[#253D29] p-6 flex flex-col justify-between gap-6 transition-colors duration-150 rounded-none"
+                  className="group text-left bg-[#FCFDF9] dark:bg-[#1D2A20] hover:bg-[#DAF4D7]/90 dark:hover:bg-[#253D29]/90 p-6 flex flex-col justify-between gap-6 transition-colors duration-150 rounded-none"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-2">
@@ -428,7 +481,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                     </span>
                     <ArrowRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-1" />
                   </div>
-                </button>
+                </ReactiveSurface>
               );
             })}
           </div>
@@ -443,16 +496,17 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 const isFocused = selectedFilter === interest.id;
 
                 return (
-                  <motion.section
+                  <ReactiveSurface
+                    as="section"
                     key={interest.id}
                     id={`interest-${interest.id}`}
                     layout
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
+                    initial={{ opacity: 0, y: 12, scale: 0.99 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.99 }}
                     viewport={{ once: true, amount: 0.1 }}
-                    transition={{ duration: 0.28, ease: CALM_EASE }}
-                    className="rounded-none border border-[#C9E1C7] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] p-6 sm:p-8"
+                    transition={SPRING_FLUID}
+                    className="rounded-none border border-[#C9E1C7] dark:border-[#314735] hover:border-[#389442] dark:hover:border-[#7DE386] bg-[#FCFDF9] dark:bg-[#1D2A20] p-6 sm:p-8 transition-colors duration-150"
                   >
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                       <div
@@ -533,7 +587,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                         )}
                       </div>
                     </div>
-                  </motion.section>
+                  </ReactiveSurface>
                 );
               })}
             </div>

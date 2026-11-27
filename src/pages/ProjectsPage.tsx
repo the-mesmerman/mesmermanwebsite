@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ExternalLink, Maximize2, Minimize2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import {
+  RevealBlock,
+  SPRING_FLUID,
+} from '../components/MotionPrimitives';
 import { DoodleIsoCube } from '../components/SketchDoodles';
 import type { PageId } from '../types/site';
 
@@ -10,7 +14,6 @@ interface ProjectsPageProps {
 }
 
 const PADLET_EMBED_URL = 'https://padlet.com/embed/s025qhyo939js96n5mrg';
-const CALM_EASE = [0.22, 1, 0.36, 1] as const;
 
 export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
   const [loaded, setLoaded] = useState(false);
@@ -49,64 +52,66 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="max-w-[1400px] mx-auto px-3 sm:px-6 pt-5 pb-8 flex flex-col gap-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-1">
-          <div className="[&_nav]:mb-1.5">
-            <Breadcrumbs
-              items={[{ label: 'Home', page: 'home' }, { label: 'Projects' }]}
-              onNavigate={onNavigate}
-            />
-          </div>
-          <div className="flex items-center gap-2.5">
-            <DoodleIsoCube className="w-6 h-6 shrink-0" />
-            <h1 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
-              My{' '}
-              <span className="italic text-[#2C913A] dark:text-[#7EE686]">
-                Projects
+      <RevealBlock immediate delay={0.02} y={10}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="[&_nav]:mb-1.5">
+              <Breadcrumbs
+                items={[{ label: 'Home', page: 'home' }, { label: 'Projects' }]}
+                onNavigate={onNavigate}
+              />
+            </div>
+            <div className="flex items-center gap-2.5">
+              <DoodleIsoCube className="w-6 h-6 shrink-0" />
+              <h1 className="font-display text-2xl sm:text-3xl font-normal tracking-tight text-[#223024] dark:text-[#EDF3EA]">
+                My{' '}
+                <span className="italic text-[#2C913A] dark:text-[#7EE686]">
+                  Projects
+                </span>
+              </h1>
+              <span className="hidden md:inline text-xs text-[#536956] dark:text-[#9FB5A1] pl-1">
+                · Things I build &amp; attach here
               </span>
-            </h1>
-            <span className="hidden md:inline text-xs text-[#536956] dark:text-[#9FB5A1] pl-1">
-              · Things I build &amp; attach here
-            </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <a
+              href={PADLET_EMBED_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="square-stamp-mint inline-flex items-center gap-1.5 px-3 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686]" />
+              <span>Open Board</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="square-stamp-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[#132B16] text-xs font-medium min-h-[38px] whitespace-nowrap shrink-0"
+            >
+              {isFullscreen ? (
+                <>
+                  <Minimize2 className="w-3.5 h-3.5" />
+                  <span>Exit Full Screen</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="w-3.5 h-3.5" />
+                  <span>Full Screen</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          <a
-            href={PADLET_EMBED_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="square-stamp-mint inline-flex items-center gap-1.5 px-3 py-2 rounded-none border border-[#BFE2BD] dark:border-[#314735] bg-[#FCFDF9] dark:bg-[#1D2A20] hover:border-[#389442] dark:hover:border-[#7DE386] text-xs font-medium text-[#223024] dark:text-[#EDF3EA] min-h-[38px] whitespace-nowrap shrink-0"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-[#2C913A] dark:text-[#7EE686]" />
-            <span>Open Board</span>
-          </a>
-
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            className="square-stamp-btn inline-flex items-center gap-1.5 px-3.5 py-2 rounded-none border border-[#389442] bg-[#7DE386] hover:bg-[#64D66E] text-[#132B16] text-xs font-medium min-h-[38px] whitespace-nowrap shrink-0"
-          >
-            {isFullscreen ? (
-              <>
-                <Minimize2 className="w-3.5 h-3.5" />
-                <span>Exit Full Screen</span>
-              </>
-            ) : (
-              <>
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span>Full Screen</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
+      </RevealBlock>
 
       <motion.div
         ref={frameWrapperRef}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, ease: CALM_EASE }}
+        initial={{ opacity: 0, y: 12, scale: 0.992 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ ...SPRING_FLUID, delay: 0.08 }}
         className={
           isFullscreen && !document.fullscreenElement
             ? 'fixed inset-0 z-50 bg-[#F7F9F3] dark:bg-[#162018] p-3 flex flex-col gap-2'
@@ -137,7 +142,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
           }`}
         >
           {!loaded && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-xs font-mono text-[#536956] dark:text-[#9FB5A1] pointer-events-none">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 text-xs font-mono text-[#536956] dark:text-[#9FB5A1] pointer-events-none">
               <span>Loading Padlet board…</span>
             </div>
           )}
@@ -147,7 +152,7 @@ export const ProjectsPage: React.FC<ProjectsPageProps> = ({ onNavigate }) => {
             allow="camera;microphone;geolocation;display-capture;clipboard-write"
             loading="eager"
             onLoad={() => setLoaded(true)}
-            className={`w-full h-full block border-0 overflow-hidden transition-opacity duration-200 ${
+            className={`absolute top-0 left-0 w-[calc(100%+20px)] h-[calc(100%+20px)] block border-0 transition-opacity duration-200 ${
               loaded ? 'opacity-100' : 'opacity-0'
             }`}
           />
